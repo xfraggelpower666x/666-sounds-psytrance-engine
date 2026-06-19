@@ -2,6 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -25,15 +26,15 @@
     <div class="header-sub">PSYTRANCE ENGINE v2.0 · SUNO CUSTOM MODE</div>
   </div>
   <nav class="tab-nav" role="tablist">
-    <button class="tab-btn active" data-tab="core"    role="tab">⚡ Core</button>
-    <button class="tab-btn"        data-tab="visual"  role="tab">🎨 Visual</button>
-    <button class="tab-btn"        data-tab="lyric"   role="tab">📝 Lyric</button>
-    <button class="tab-btn"        data-tab="psycho"  role="tab">🧠 Psycho</button>
-    <button class="tab-btn"        data-tab="4d"      role="tab">🌐 4D</button>
-    <button class="tab-btn"        data-tab="matrix"  role="tab">⚙️ Matrix</button>
-    <button class="tab-btn"        data-tab="audit"   role="tab">📊 Audit</button>
-    <button class="tab-btn"        data-tab="orch"    role="tab">🎼 Orch</button>
-    <button class="tab-btn"        data-tab="backup"  role="tab">💾 Backup</button>
+    <button type="button" class="tab-btn active" data-tab="core"    role="tab">⚡ Core</button>
+    <button type="button" class="tab-btn"        data-tab="visual"  role="tab">🎨 Visual</button>
+    <button type="button" class="tab-btn"        data-tab="lyric"   role="tab">📝 Lyric</button>
+    <button type="button" class="tab-btn"        data-tab="psycho"  role="tab">🧠 Psycho</button>
+    <button type="button" class="tab-btn"        data-tab="4d"      role="tab">🌐 4D</button>
+    <button type="button" class="tab-btn"        data-tab="matrix"  role="tab">⚙️ Matrix</button>
+    <button type="button" class="tab-btn"        data-tab="audit"   role="tab">📊 Audit</button>
+    <button type="button" class="tab-btn"        data-tab="orch"    role="tab">🎼 Orch</button>
+    <button type="button" class="tab-btn"        data-tab="backup"  role="tab">💾 Backup</button>
   </nav>
 </header>
 
@@ -101,10 +102,10 @@
   </div>
 
   <div class="btn-row">
-    <button class="btn btn-primary" id="btn-randomize">🎲 Randomize</button>
-    <button class="btn btn-secondary" id="btn-copy">📋 Copy Prompt</button>
-    <button class="btn btn-purple btn-sm" id="btn-run-audit">📊 Audit</button>
-    <button class="btn btn-secondary btn-sm" id="btn-snapshot">💾 Snapshot</button>
+    <button type="button" class="btn btn-primary" id="btn-randomize">🎲 Randomize</button>
+    <button type="button" class="btn btn-secondary" id="btn-copy">📋 Copy Prompt</button>
+    <button type="button" class="btn btn-purple btn-sm" id="btn-run-audit">📊 Audit</button>
+    <button type="button" class="btn btn-secondary btn-sm" id="btn-snapshot">💾 Snapshot</button>
   </div>
 
 </section>
@@ -118,9 +119,9 @@
     <p class="text-dim font-mono mb-12" style="font-size:0.65rem">Automatisch aus Subgenre + Mood generiert — für Midjourney, Flux, Stable Diffusion</p>
 
     <div class="btn-row mb-12">
-      <button class="btn btn-secondary btn-sm active" data-fmt="midjourney">Midjourney</button>
-      <button class="btn btn-secondary btn-sm" data-fmt="flux">Flux</button>
-      <button class="btn btn-secondary btn-sm" data-fmt="stablediff">Stable Diff</button>
+      <button type="button" class="btn btn-secondary btn-sm active" data-fmt="midjourney">Midjourney</button>
+      <button type="button" class="btn btn-secondary btn-sm" data-fmt="flux">Flux</button>
+      <button type="button" class="btn btn-secondary btn-sm" data-fmt="stablediff">Stable Diff</button>
     </div>
 
     <div class="output-box" style="border-color:var(--neon-purple);box-shadow:var(--glow-purple)">
@@ -129,7 +130,7 @@
     </div>
 
     <div class="btn-row">
-      <button class="btn btn-purple" id="btn-copy-visual">📋 Copy Visual Prompt</button>
+      <button type="button" class="btn btn-purple" id="btn-copy-visual">📋 Copy Visual Prompt</button>
     </div>
   </div>
 </section>
@@ -146,7 +147,7 @@
       <pre class="output-text" id="lyric-output" style="color:var(--neon-green);white-space:pre-wrap">—</pre>
     </div>
     <div class="btn-row">
-      <button class="btn btn-green" onclick="navigator.clipboard.writeText(document.getElementById('lyric-output').textContent).then(()=>APP_showToast('Lyric kopiert!'))">📋 Copy Lyrics</button>
+      <button type="button" class="btn btn-green" id="btn-copy-lyric">📋 Copy Lyrics</button>
     </div>
   </div>
 </section>
@@ -234,7 +235,7 @@
     <div class="char-counter" id="psycho-char-count">0 chars</div>
   </div>
   <div class="btn-row">
-    <button class="btn btn-purple" id="btn-copy-psycho">📋 Copy Psycho Tags</button>
+    <button type="button" class="btn btn-purple" id="btn-copy-psycho">📋 Copy Psycho Tags</button>
   </div>
 
 </section>
@@ -322,18 +323,18 @@
     <div class="card-title"><span class="icon">🌐</span> 3D Position Visualizer</div>
     <canvas id="canvas-4d" style="height:200px;width:100%"></canvas>
     <div class="btn-row">
-      <button class="btn btn-secondary btn-sm" id="btn-motion-toggle">▶ Motion Start</button>
+      <button type="button" class="btn btn-secondary btn-sm" id="btn-motion-toggle">▶ Motion Start</button>
     </div>
   </div>
 
   <!-- 4D Output -->
   <div class="output-box mt-16" style="border-color:var(--neon-cyan);box-shadow:var(--glow-cyan)">
     <div class="output-label" style="color:var(--neon-cyan)">🌐 4D SUNO TAGS</div>
-    <div class="output-text" id="4d-output" style="color:var(--neon-cyan)">—</div>
-    <div class="char-counter" id="4d-char-count">0 chars</div>
+    <div class="output-text" id="out-4d" style="color:var(--neon-cyan)">—</div>
+    <div class="char-counter" id="char-4d">0 chars</div>
   </div>
   <div class="btn-row">
-    <button class="btn btn-secondary" id="btn-copy-4d">📋 Copy 4D Tags</button>
+    <button type="button" class="btn btn-secondary" id="btn-copy-4d">📋 Copy 4D Tags</button>
   </div>
 
 </section>
@@ -344,13 +345,13 @@
 <section id="panel-matrix" class="tab-panel" role="tabpanel">
 
   <!-- 3 Slots -->
-  <div class="section-grid section-grid three-col">
+  <div class="section-grid three-col">
 
     <!-- Core Slot -->
     <div class="matrix-slot slot-active" id="matrix-slot-core">
       <div class="slot-header">
         <span class="slot-name text-cyan">⚡ CORE</span>
-        <button class="slot-toggle on" id="slot-toggle-core"></button>
+        <button type="button" class="slot-toggle on" id="slot-toggle-core" aria-label="Toggle Core slot"></button>
       </div>
       <div class="font-mono text-dim" style="font-size:0.62rem">Subgenre + BPM + Sonic + Mood + Scale + Mix</div>
       <div class="font-mono text-green mt-8" style="font-size:0.6rem">→ app.js buildPrompt()</div>
@@ -360,7 +361,7 @@
     <div class="matrix-slot slot-active" id="matrix-slot-psycho">
       <div class="slot-header">
         <span class="slot-name text-purple">🧠 PSYCHO</span>
-        <button class="slot-toggle on" id="slot-toggle-psycho"></button>
+        <button type="button" class="slot-toggle on" id="slot-toggle-psycho" aria-label="Toggle Psycho slot"></button>
       </div>
       <div class="font-mono text-dim" style="font-size:0.62rem">Binaural + Haas + Isochronic + Room</div>
       <div class="font-mono text-green mt-8" style="font-size:0.6rem">→ psycho.js PSYCHO_TAGS</div>
@@ -370,7 +371,7 @@
     <div class="matrix-slot slot-active" id="matrix-slot-4d">
       <div class="slot-header">
         <span class="slot-name text-cyan">🌐 4D</span>
-        <button class="slot-toggle on" id="slot-toggle-4d"></button>
+        <button type="button" class="slot-toggle on" id="slot-toggle-4d" aria-label="Toggle 4D slot"></button>
       </div>
       <div class="font-mono text-dim" style="font-size:0.62rem">XY + Z + Motion + Ambisonics + Doppler</div>
       <div class="font-mono text-green mt-8" style="font-size:0.6rem">→ engine4d.js ENGINE_4D_TAGS</div>
@@ -389,7 +390,7 @@
     </div>
     <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
       <input type="text" id="matrix-preset-name" placeholder="Preset Name..." style="flex:1;min-width:120px">
-      <button class="btn btn-purple btn-sm" id="btn-save-matrix-preset">💾 Save</button>
+      <button type="button" class="btn btn-purple btn-sm" id="btn-save-matrix-preset">💾 Save</button>
     </div>
   </div>
 
@@ -399,9 +400,9 @@
     <table class="compat-table">
       <thead>
         <tr>
-          <th>Kombination</th>
-          <th>Status</th>
-          <th>Hinweis</th>
+          <th scope="col">Kombination</th>
+          <th scope="col">Status</th>
+          <th scope="col">Hinweis</th>
         </tr>
       </thead>
       <tbody id="compat-table-body">
@@ -417,8 +418,8 @@
     <div class="char-counter" id="matrix-char-count">0/200</div>
   </div>
   <div class="btn-row">
-    <button class="btn btn-primary" id="btn-copy-matrix">📋 Copy Master Prompt</button>
-    <button class="btn btn-secondary" id="btn-rebuild-matrix">🔄 Rebuild</button>
+    <button type="button" class="btn btn-primary" id="btn-copy-matrix">📋 Copy Master Prompt</button>
+    <button type="button" class="btn btn-secondary" id="btn-rebuild-matrix">🔄 Rebuild</button>
   </div>
 
 </section>
@@ -436,7 +437,7 @@
         <li><span>Noch kein Audit gestartet</span><span class="text-muted">—</span></li>
       </ul>
       <div class="btn-row">
-        <button class="btn btn-primary" id="btn-run-audit">▶ Audit starten</button>
+        <button type="button" class="btn btn-primary" id="btn-run-audit-panel">▶ Audit starten</button>
       </div>
     </div>
     <div class="card">
@@ -462,8 +463,8 @@
     <p class="text-dim font-mono mb-12" style="font-size:0.65rem">Baue Layer-basierte Prompts — jeder Layer hat eine eigene Rolle und ein eigenes Subgenre</p>
     <div id="orchestra-layers"></div>
     <div class="btn-row">
-      <button class="btn btn-secondary btn-sm" id="btn-orch-add">+ Layer hinzufügen</button>
-      <button class="btn btn-primary" id="btn-orch-build">🎼 Build Orchestra Prompt</button>
+      <button type="button" class="btn btn-secondary btn-sm" id="btn-orch-add">+ Layer hinzufügen</button>
+      <button type="button" class="btn btn-primary" id="btn-orch-build">🎼 Build Orchestra Prompt</button>
     </div>
   </div>
   <div class="output-box mt-16" style="border-color:var(--neon-orange)">
@@ -485,8 +486,8 @@
         <span class="text-muted font-mono" style="font-size:0.62rem">Keine Snapshots</span>
       </div>
       <div class="btn-row">
-        <button class="btn btn-secondary btn-sm" id="btn-snapshot">📸 Snapshot</button>
-        <button class="btn btn-secondary btn-sm" id="btn-export-json">📤 Export JSON</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="btn-snapshot-backup">📸 Snapshot</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="btn-export-json">📤 Export JSON</button>
         <label class="btn btn-secondary btn-sm" style="cursor:pointer">
           📥 Import JSON
           <input type="file" id="import-input" accept=".json" style="display:none">
@@ -506,7 +507,7 @@
       </div>
       <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
         <input type="text" id="preset-name-input" placeholder="Preset Name..." style="flex:1;min-width:120px">
-        <button class="btn btn-green btn-sm" id="btn-save-preset">💾 Speichern</button>
+        <button type="button" class="btn btn-green btn-sm" id="btn-save-preset">💾 Speichern</button>
       </div>
     </div>
 
@@ -518,41 +519,41 @@
 <!-- ============================================================
      BOTTOM NAV (Mobile)
      ============================================================ -->
-<nav class="bottom-nav" role="navigation" aria-label="Mobile Navigation">
+<nav class="bottom-nav" aria-label="Mobile Navigation">
   <div class="bottom-nav-inner">
-    <button class="bnav-btn active" data-tab="core">
+    <button type="button" class="bnav-btn active" data-tab="core">
       <span class="bnav-icon">⚡</span>
       <span class="bnav-label">Core</span>
     </button>
-    <button class="bnav-btn" data-tab="visual">
+    <button type="button" class="bnav-btn" data-tab="visual">
       <span class="bnav-icon">🎨</span>
       <span class="bnav-label">Visual</span>
     </button>
-    <button class="bnav-btn" data-tab="lyric">
+    <button type="button" class="bnav-btn" data-tab="lyric">
       <span class="bnav-icon">📝</span>
       <span class="bnav-label">Lyric</span>
     </button>
-    <button class="bnav-btn" data-tab="psycho">
+    <button type="button" class="bnav-btn" data-tab="psycho">
       <span class="bnav-icon">🧠</span>
       <span class="bnav-label">Psycho</span>
     </button>
-    <button class="bnav-btn" data-tab="4d">
+    <button type="button" class="bnav-btn" data-tab="4d">
       <span class="bnav-icon">🌐</span>
       <span class="bnav-label">4D</span>
     </button>
-    <button class="bnav-btn" data-tab="matrix">
+    <button type="button" class="bnav-btn" data-tab="matrix">
       <span class="bnav-icon">⚙️</span>
       <span class="bnav-label">Matrix</span>
     </button>
-    <button class="bnav-btn" data-tab="audit">
+    <button type="button" class="bnav-btn" data-tab="audit">
       <span class="bnav-icon">📊</span>
       <span class="bnav-label">Audit</span>
     </button>
-    <button class="bnav-btn" data-tab="orch">
+    <button type="button" class="bnav-btn" data-tab="orch">
       <span class="bnav-icon">🎼</span>
       <span class="bnav-label">Orch</span>
     </button>
-    <button class="bnav-btn" data-tab="backup">
+    <button type="button" class="bnav-btn" data-tab="backup">
       <span class="bnav-icon">💾</span>
       <span class="bnav-label">Backup</span>
     </button>
