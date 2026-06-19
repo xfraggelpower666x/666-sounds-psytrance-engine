@@ -1,0 +1,39 @@
+{
+  "name": "666-sounds-psytrance-engine",
+  "version": "1.0.0",
+  "description": "666 SOUNDS DESIGN — Psychoacoustic Psytrance Prompt Engine",
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/.bin/jest --coverage",
+    "test:watch": "node --experimental-vm-modules node_modules/.bin/jest --watch",
+    "test:psycho": "node --experimental-vm-modules node_modules/.bin/jest tests/psycho.test.js --verbose",
+    "test:4d": "node --experimental-vm-modules node_modules/.bin/jest tests/engine4d.test.js --verbose"
+  },
+  "jest": {
+    "extensionsToTreatAsEsm": [".js"],
+    "transform": {},
+    "testEnvironment": "node",
+    "testMatch": [
+      "tests/**/*.test.js"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.js"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 90,
+        "lines": 90,
+        "statements": 90
+      }
+    }
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "666 SOUNDS DESIGN",
+  "license": "MIT"
+}

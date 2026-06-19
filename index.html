@@ -13,6 +13,7 @@
   <link rel="icon" href="./icon-192.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./mobile.css">
+  <link rel="stylesheet" href="./lyric.css">
 </head>
 <body>
 
@@ -135,20 +136,238 @@
 </section>
 
 <!-- ============================================================
-     PANEL: LYRIC STRUCTURE
+     PANEL: LYRIK ENGINE
      ============================================================ -->
 <section id="panel-lyric" class="tab-panel" role="tabpanel">
-  <div class="card">
-    <div class="card-title"><span class="icon">📝</span> Suno Lyric Structure</div>
-    <p class="text-dim font-mono mb-12" style="font-size:0.65rem">Suno Section-Tags passend zum gewählten Subgenre — direkt in das Lyrics-Feld einfügen</p>
-    <div class="output-box" style="border-color:var(--neon-green);box-shadow:var(--glow-green)">
-      <div class="output-label" style="color:var(--neon-green)">📝 LYRIC STRUCTURE</div>
-      <pre class="output-text" id="lyric-output" style="color:var(--neon-green);white-space:pre-wrap">—</pre>
+<div id="lyric-panel">
+
+  <!-- ── Mode Selector ──────────────────────────────────────── -->
+  <div class="lyric-mode-selector" role="tablist" aria-label="Lyrik Modus">
+    <button class="lyric-mode-btn active" data-mode="manual" role="tab" aria-selected="true">
+      <span class="mode-icon">✍️</span>
+      <span class="mode-label">Manual</span>
+    </button>
+    <button class="lyric-mode-btn" data-mode="ai" role="tab" aria-selected="false">
+      <span class="mode-icon">🤖</span>
+      <span class="mode-label">KI-Gen</span>
+    </button>
+    <button class="lyric-mode-btn" data-mode="image" role="tab" aria-selected="false">
+      <span class="mode-icon">🖼️</span>
+      <span class="mode-label">Bild</span>
+    </button>
+  </div>
+
+  <!-- ── Lyrik-Lock Toggle ─────────────────────────────────── -->
+  <div class="lyric-lock-bar" id="lyric-lock-bar">
+    <div class="lyric-lock-label">
+      <span class="lyric-lock-icon">🔓</span>
+      <div>
+        <div>LYRIK-LOCK</div>
+        <div class="lock-status-text" id="lock-status-text">Eigene Lyrik — KI darf ändern</div>
+      </div>
     </div>
-    <div class="btn-row">
-      <button class="btn btn-green" onclick="navigator.clipboard.writeText(document.getElementById('lyric-output').textContent).then(()=>APP_showToast('Lyric kopiert!'))">📋 Copy Lyrics</button>
+    <label class="toggle-switch" aria-label="Lyrik-Lock aktivieren">
+      <input type="checkbox" id="lyric-lock-toggle">
+      <span class="toggle-slider"></span>
+    </label>
+  </div>
+
+  <!-- ── API Key Warning ───────────────────────────────────── -->
+  <div class="lyric-api-warning" id="lyric-api-warning">
+    ⚠️ OpenAI API Key fehlt — KI-Modus und Bild-Modus benötigen einen Key.
+    <div class="api-key-input-row">
+      <input type="password" class="api-key-input" id="lyric-api-key-input" placeholder="sk-..." autocomplete="off" spellcheck="false">
+      <button class="api-key-save-btn" id="lyric-api-key-save">💾 Speichern</button>
     </div>
   </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       MODUS: MANUAL
+  ════════════════════════════════════════════════════════ -->
+  <div class="lyric-mode-panel active" id="lyric-panel-manual">
+
+    <div class="lyric-section-label">✍️ Deine Lyrik</div>
+    <div class="lyric-textarea-wrap">
+      <textarea class="lyric-textarea" id="lyric-manual-text"
+        placeholder="[Intro]&#10;Pulse of the void, electric spine&#10;&#10;[Drop]&#10;666 hertz machine divine..."
+        rows="8" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+      <span class="lyric-char-counter" id="lyric-manual-char">0</span>
+      <span class="lyric-locked-badge">🔒 LOCKED</span>
+    </div>
+
+    <!-- Section Tag Editor -->
+    <div class="section-tag-editor" id="section-tag-editor">
+      <div class="section-tag-header" id="section-tag-header">
+        <span class="section-tag-title">🏷️ Section Tags &amp; Direktiven</span>
+        <span class="section-tag-toggle-icon">▼</span>
+      </div>
+      <div class="section-tag-body" id="section-tag-body">
+        <div class="section-tag-row">
+          <span class="section-tag-name">[Intro]</span>
+          <input class="section-tag-directive" placeholder="(low energy)" value="(low energy)">
+        </div>
+        <div class="section-tag-row">
+          <span class="section-tag-name">[Build]</span>
+          <input class="section-tag-directive" placeholder="(building tension)">
+        </div>
+        <div class="section-tag-row">
+          <span class="section-tag-name">[Drop]</span>
+          <input class="section-tag-directive" placeholder="(maximum dark energy)">
+        </div>
+        <div class="section-tag-row">
+          <span class="section-tag-name">[Break]</span>
+          <input class="section-tag-directive" placeholder="(psychedelic break)">
+        </div>
+        <div class="section-tag-row">
+          <span class="section-tag-name">[Peak]</span>
+          <input class="section-tag-directive" placeholder="(peak energy)">
+        </div>
+        <div class="section-tag-row">
+          <span class="section-tag-name">[Outro]</span>
+          <input class="section-tag-directive" placeholder="(fade into void)">
+        </div>
+        <button class="section-tag-add-btn" id="section-tag-add-btn">+ Custom Tag hinzufügen</button>
+      </div>
+    </div>
+
+    <button class="lyric-build-prompt-btn" id="lyric-manual-build-btn">⚡ Extended Prompt aufbauen</button>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       MODUS: KI-GENERIERUNG
+  ════════════════════════════════════════════════════════ -->
+  <div class="lyric-mode-panel" id="lyric-panel-ai">
+
+    <div class="lyric-section-label">💡 Keywords / Thema</div>
+    <input type="text" class="lyric-keyword-input" id="lyric-ai-keywords"
+      placeholder="z.B. dark machine, cyberpunk ritual, 666 frequency"
+      autocorrect="off" autocapitalize="off" spellcheck="false">
+
+    <div class="lyric-section-label">🎵 Subgenre für Lyrik-Stil</div>
+    <div class="lyric-genre-pills" id="lyric-genre-pills">
+      <button class="lyric-genre-pill active" data-genre="dark-forest">Dark Forest</button>
+      <button class="lyric-genre-pill" data-genre="full-on">Full-On</button>
+      <button class="lyric-genre-pill" data-genre="suomi">Suomi/Hi-Tech</button>
+      <button class="lyric-genre-pill" data-genre="goa">Goa Trance</button>
+      <button class="lyric-genre-pill" data-genre="zenonesque">Zenonesque</button>
+      <button class="lyric-genre-pill" data-genre="progressive">Progressive</button>
+      <button class="lyric-genre-pill" data-genre="hi-tech">Hi-Tech</button>
+      <button class="lyric-genre-pill" data-genre="darkpsy">Dark Psy</button>
+    </div>
+
+    <div class="lyric-section-label">🧬 Multi-Genre Mixer</div>
+    <div class="genre-mixer-block">
+      <div class="genre-mixer-header">
+        <span class="genre-mixer-title">Genre Mix (mehrere Genres kombinieren)</span>
+      </div>
+      <div class="genre-mixer-body" id="genre-mixer-rows">
+        <div class="genre-mix-row">
+          <select class="genre-mix-select">
+            <option value="dark-forest">Dark Forest</option>
+            <option value="full-on">Full-On</option>
+            <option value="suomi">Suomi/Hi-Tech</option>
+            <option value="goa">Goa Trance</option>
+            <option value="zenonesque">Zenonesque</option>
+            <option value="progressive">Progressive</option>
+            <option value="hi-tech">Hi-Tech</option>
+            <option value="darkpsy">Dark Psy</option>
+          </select>
+          <input type="number" class="genre-mix-weight" value="60" min="1" max="100" title="Gewichtung %">
+          <button class="genre-mix-remove" title="Entfernen">✕</button>
+        </div>
+      </div>
+      <button class="genre-mix-add-btn" id="genre-mix-add-btn">+ Genre hinzufügen</button>
+    </div>
+
+    <button class="lyric-generate-btn" id="lyric-ai-generate-btn">🤖 Lyrik generieren</button>
+
+    <!-- Spinner -->
+    <div class="lyric-ai-spinner" id="lyric-ai-spinner">
+      <div class="spinner-ring"></div>
+      <div class="spinner-text">KI generiert Lyrik...</div>
+      <div class="spinner-subtext">GPT-4o-mini · 666 SOUNDS DESIGN</div>
+    </div>
+
+    <!-- Generated Output -->
+    <div class="lyric-output-block" id="lyric-ai-output-block">
+      <div class="lyric-output-header">
+        <span class="lyric-output-title">🤖 Generierte Lyrik</span>
+        <div class="lyric-output-actions">
+          <button class="lyric-action-btn" id="lyric-ai-copy-btn">📋 Copy</button>
+          <button class="lyric-action-btn" id="lyric-ai-use-btn">→ Verwenden</button>
+        </div>
+      </div>
+      <textarea class="lyric-output-textarea" id="lyric-ai-output-text" readonly></textarea>
+    </div>
+
+    <button class="lyric-build-prompt-btn" id="lyric-ai-build-btn" style="display:none">⚡ Extended Prompt aufbauen</button>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       MODUS: BILD-ANALYSE
+  ════════════════════════════════════════════════════════ -->
+  <div class="lyric-mode-panel" id="lyric-panel-image">
+
+    <div class="lyric-section-label">🖼️ Bild hochladen</div>
+    <div class="lyric-image-dropzone" id="lyric-dropzone">
+      <input type="file" id="lyric-image-input" accept="image/*" aria-label="Bild für Lyrik-Analyse">
+      <span class="dropzone-icon">📸</span>
+      <span class="dropzone-text">Bild hier ablegen oder tippen zum Auswählen</span>
+      <span class="dropzone-subtext">JPG / PNG / WEBP — Vision-KI analysiert die Bildstimmung</span>
+    </div>
+
+    <div class="lyric-image-preview" id="lyric-image-preview">
+      <img id="lyric-image-thumb" src="" alt="Bild-Vorschau">
+      <button class="image-remove-btn" id="lyric-image-remove" title="Bild entfernen">✕</button>
+    </div>
+
+    <div class="lyric-section-label">💡 Zusatz-Kontext (optional)</div>
+    <input type="text" class="lyric-keyword-input" id="lyric-image-context"
+      placeholder="z.B. dark rave, psychedelic forest, machine cult"
+      autocorrect="off" autocapitalize="off" spellcheck="false">
+
+    <button class="lyric-generate-btn" id="lyric-image-generate-btn" disabled>🔍 Bild analysieren + Lyrik generieren</button>
+
+    <!-- Spinner -->
+    <div class="lyric-ai-spinner" id="lyric-image-spinner">
+      <div class="spinner-ring"></div>
+      <div class="spinner-text">Vision-KI analysiert Bild...</div>
+      <div class="spinner-subtext">GPT-4o Vision · 666 SOUNDS DESIGN</div>
+    </div>
+
+    <!-- Generated Output -->
+    <div class="lyric-output-block" id="lyric-image-output-block">
+      <div class="lyric-output-header">
+        <span class="lyric-output-title">🖼️ Bild-Lyrik</span>
+        <div class="lyric-output-actions">
+          <button class="lyric-action-btn" id="lyric-image-copy-btn">📋 Copy</button>
+          <button class="lyric-action-btn" id="lyric-image-use-btn">→ Verwenden</button>
+        </div>
+      </div>
+      <textarea class="lyric-output-textarea" id="lyric-image-output-text" readonly></textarea>
+    </div>
+
+    <button class="lyric-build-prompt-btn" id="lyric-image-build-btn" style="display:none">⚡ Extended Prompt aufbauen</button>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       EXTENDED PROMPT OUTPUT (alle Modi)
+  ════════════════════════════════════════════════════════ -->
+  <div class="extended-prompt-block" id="extended-prompt-block" style="display:none">
+    <div class="extended-prompt-header">
+      <span class="extended-prompt-title">⚡ Extended Prompt</span>
+      <span class="extended-prompt-char-count" id="extended-prompt-char-count">0 / 200</span>
+    </div>
+    <textarea class="extended-prompt-textarea" id="extended-prompt-text" rows="4" readonly></textarea>
+    <div class="extended-prompt-footer">
+      <button class="extended-copy-btn" id="extended-copy-btn">📋 Copy Style Tag</button>
+      <button class="extended-inject-btn" id="extended-inject-btn">→ In Matrix injizieren</button>
+    </div>
+  </div>
+
+</div><!-- /lyric-panel -->
+</section>
+
 </section>
 
 <!-- ============================================================
@@ -567,6 +786,8 @@
 <script src="./psycho.js"></script>
 <script src="./engine4d.js"></script>
 <script src="./matrix.js"></script>
+<script src="./lyric.templates.js"></script>
+<script src="./lyric.engine.js"></script>
 
 </body>
 </html>
