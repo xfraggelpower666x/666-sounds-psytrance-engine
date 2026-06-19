@@ -1,0 +1,161 @@
+/* ============================================================
+   666 SOUNDS DESIGN — mobile.css
+   iPhone / Touch Optimizations + Bottom Nav
+   ============================================================ */
+
+/* ---- Safe Area & Viewport ---- */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .app-wrapper { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+  .bottom-nav  { padding-bottom: env(safe-area-inset-bottom); }
+}
+
+/* ---- Bottom Nav ---- */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(8,8,16,0.97);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border);
+  z-index: 200;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.bottom-nav-inner {
+  display: flex;
+  min-width: max-content;
+  padding: 6px 8px;
+  gap: 2px;
+}
+.bnav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 10px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 8px;
+  min-width: 54px;
+  transition: color 0.15s, background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.bnav-btn .bnav-icon { font-size: 1.1rem; line-height: 1; }
+.bnav-btn .bnav-label {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.bnav-btn.active {
+  color: var(--neon-purple);
+  background: rgba(201,47,255,0.1);
+}
+.bnav-btn:active { transform: scale(0.93); }
+
+/* ---- Show bottom nav on mobile ---- */
+@media (max-width: 768px) {
+  .bottom-nav  { display: block; }
+  .tab-nav     { display: none; } /* hide top tabs on mobile */
+  .app-wrapper { padding-top: 8px; }
+}
+
+/* ============================================================
+   TOUCH TARGETS
+   ============================================================ */
+@media (max-width: 768px) {
+  .genre-btn   { padding: 12px 6px; min-height: 52px; }
+  .toggle-btn  { padding: 10px 4px; min-height: 44px; font-size: 0.62rem; }
+  .preset-btn  { padding: 10px 6px; min-height: 44px; }
+  .btn         { padding: 13px 18px; min-height: 44px; }
+  .btn-sm      { padding: 10px 12px; min-height: 40px; }
+  input[type="range"]::-webkit-slider-thumb {
+    width: 22px; height: 22px;
+  }
+  select, input[type="text"], textarea {
+    padding: 11px 12px;
+    font-size: 0.8rem;
+  }
+
+  /* ---- Stack grid ---- */
+  .section-grid { grid-template-columns: 1fr; }
+
+  /* ---- Card padding ---- */
+  .card { padding: 14px; }
+
+  /* ---- Subgenre grid 2-col on small ---- */
+  .subgenre-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+
+  /* ---- Toggle grid 2-col ---- */
+  .toggle-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* ---- Output text larger ---- */
+  .output-text { font-size: 0.85rem; }
+
+  /* ---- Audit score ---- */
+  .audit-score { font-size: 2.2rem; }
+
+  /* ---- XY pad full width ---- */
+  .xy-pad-container { max-width: 100%; }
+
+  /* ---- Preset grid 2-col ---- */
+  .preset-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* ---- Info grid ---- */
+  .info-grid { grid-template-columns: 1fr; }
+
+  /* ---- Header ---- */
+  .site-header { padding: 10px 14px; }
+  .logo { font-size: 0.95rem; }
+  .header-sub { display: none; }
+}
+
+/* ============================================================
+   HAPTIC-FEEL ANIMATIONS (mobile)
+   ============================================================ */
+@media (max-width: 768px) {
+  .genre-btn:active,
+  .toggle-btn:active,
+  .preset-btn:active {
+    transform: scale(0.96);
+    transition: transform 0.08s;
+  }
+  .btn:active { transform: scale(0.97); }
+}
+
+/* ============================================================
+   PWA STANDALONE MODE
+   ============================================================ */
+@media (display-mode: standalone) {
+  .site-header {
+    padding-top: max(12px, env(safe-area-inset-top));
+  }
+  .bottom-nav {
+    padding-bottom: max(6px, env(safe-area-inset-bottom));
+  }
+}
+
+/* ============================================================
+   CANVAS ON MOBILE
+   ============================================================ */
+@media (max-width: 768px) {
+  canvas { max-height: 160px; }
+}
+
+/* ============================================================
+   MATRIX SLOT ON MOBILE
+   ============================================================ */
+@media (max-width: 768px) {
+  .matrix-slot { padding: 10px; }
+  .compat-table { font-size: 0.58rem; }
+  .compat-table th, .compat-table td { padding: 4px 6px; }
+}
+
+/* ============================================================
+   TOAST POSITION MOBILE
+   ============================================================ */
+@media (max-width: 768px) {
+  .toast { bottom: 76px; font-size: 0.68rem; }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "666 SOUNDS — Psytrance Engine",
+  "short_name": "666 SOUNDS",
+  "description": "Psychoacoustic Psytrance Prompt Generator for Suno AI",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#080810",
+  "theme_color": "#c92fff",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "./icon-192.svg", "sizes": "192x192", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

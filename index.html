@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="666 SOUNDS">
+  <meta name="theme-color" content="#c92fff">
+  <meta name="description" content="Psychoacoustic Psytrance Prompt Generator for Suno AI Custom Mode">
+  <title>666 SOUNDS — Psytrance Engine</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./icon-192.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./mobile.css">
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<header class="site-header">
+  <div>
+    <a class="logo" href="#">666 <span>SOUNDS</span></a>
+    <div class="header-sub">PSYTRANCE ENGINE v2.0 · SUNO CUSTOM MODE</div>
+  </div>
+  <nav class="tab-nav" role="tablist">
+    <button class="tab-btn active" data-tab="core"    role="tab">⚡ Core</button>
+    <button class="tab-btn"        data-tab="visual"  role="tab">🎨 Visual</button>
+    <button class="tab-btn"        data-tab="lyric"   role="tab">📝 Lyric</button>
+    <button class="tab-btn"        data-tab="psycho"  role="tab">🧠 Psycho</button>
+    <button class="tab-btn"        data-tab="4d"      role="tab">🌐 4D</button>
+    <button class="tab-btn"        data-tab="matrix"  role="tab">⚙️ Matrix</button>
+    <button class="tab-btn"        data-tab="audit"   role="tab">📊 Audit</button>
+    <button class="tab-btn"        data-tab="orch"    role="tab">🎼 Orch</button>
+    <button class="tab-btn"        data-tab="backup"  role="tab">💾 Backup</button>
+  </nav>
+</header>
+
+<main class="app-wrapper">
+
+<!-- ============================================================
+     PANEL: CORE GENERATOR
+     ============================================================ -->
+<section id="panel-core" class="tab-panel active" role="tabpanel">
+
+  <div class="section-grid">
+
+    <!-- Subgenre -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🎵</span> Subgenre</div>
+      <div id="subgenre-grid" class="subgenre-grid"></div>
+    </div>
+
+    <!-- BPM + Settings -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🥁</span> BPM &amp; Settings</div>
+      <div class="slider-row">
+        <span class="slider-label">BPM</span>
+        <input type="range" id="bpm-slider" min="130" max="170" step="1" value="148">
+        <span class="slider-value" id="bpm-value">148</span>
+      </div>
+      <div class="slider-row mt-8">
+        <span class="slider-label">Scale</span>
+        <select id="scale-select" style="flex:1"></select>
+      </div>
+      <div class="slider-row mt-8">
+        <span class="slider-label">Mix</span>
+        <select id="mix-select" style="flex:1"></select>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-divider"></div>
+
+  <div class="section-grid">
+
+    <!-- Sonic Elements -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🔊</span> Sonic Elements <span class="text-muted" style="font-size:0.6rem;font-weight:400">max 4</span></div>
+      <div id="sonic-toggles" class="toggle-grid"></div>
+    </div>
+
+    <!-- Moods -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🌀</span> Mood <span class="text-muted" style="font-size:0.6rem;font-weight:400">max 2</span></div>
+      <div id="mood-toggles" class="toggle-grid"></div>
+    </div>
+
+  </div>
+
+  <!-- Guard Bar -->
+  <div id="guard-bar" class="guard-bar guard-ok mt-12">✅ Guard: Keine Konflikte</div>
+
+  <!-- Output -->
+  <div class="output-box">
+    <div class="output-label">⚡ SUNO STYLE TAG — 200 CHAR</div>
+    <div class="output-text" id="prompt-output">—</div>
+    <div class="char-counter char-ok" id="char-count">0/200</div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" id="btn-randomize">🎲 Randomize</button>
+    <button class="btn btn-secondary" id="btn-copy">📋 Copy Prompt</button>
+    <button class="btn btn-purple btn-sm" id="btn-run-audit">📊 Audit</button>
+    <button class="btn btn-secondary btn-sm" id="btn-snapshot">💾 Snapshot</button>
+  </div>
+
+</section>
+
+<!-- ============================================================
+     PANEL: VISUAL OUTPUT
+     ============================================================ -->
+<section id="panel-visual" class="tab-panel" role="tabpanel">
+  <div class="card">
+    <div class="card-title"><span class="icon">🎨</span> Visual Prompt Generator</div>
+    <p class="text-dim font-mono mb-12" style="font-size:0.65rem">Automatisch aus Subgenre + Mood generiert — für Midjourney, Flux, Stable Diffusion</p>
+
+    <div class="btn-row mb-12">
+      <button class="btn btn-secondary btn-sm active" data-fmt="midjourney">Midjourney</button>
+      <button class="btn btn-secondary btn-sm" data-fmt="flux">Flux</button>
+      <button class="btn btn-secondary btn-sm" data-fmt="stablediff">Stable Diff</button>
+    </div>
+
+    <div class="output-box" style="border-color:var(--neon-purple);box-shadow:var(--glow-purple)">
+      <div class="output-label" style="color:var(--neon-purple)">🎨 VISUAL PROMPT</div>
+      <div class="output-text" id="visual-output" style="color:var(--neon-cyan)">—</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-purple" id="btn-copy-visual">📋 Copy Visual Prompt</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PANEL: LYRIC STRUCTURE
+     ============================================================ -->
+<section id="panel-lyric" class="tab-panel" role="tabpanel">
+  <div class="card">
+    <div class="card-title"><span class="icon">📝</span> Suno Lyric Structure</div>
+    <p class="text-dim font-mono mb-12" style="font-size:0.65rem">Suno Section-Tags passend zum gewählten Subgenre — direkt in das Lyrics-Feld einfügen</p>
+    <div class="output-box" style="border-color:var(--neon-green);box-shadow:var(--glow-green)">
+      <div class="output-label" style="color:var(--neon-green)">📝 LYRIC STRUCTURE</div>
+      <pre class="output-text" id="lyric-output" style="color:var(--neon-green);white-space:pre-wrap">—</pre>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-green" onclick="navigator.clipboard.writeText(document.getElementById('lyric-output').textContent).then(()=>APP_showToast('Lyric kopiert!'))">📋 Copy Lyrics</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PANEL: PSYCHOAKUSTIK ENGINE
+     ============================================================ -->
+<section id="panel-psycho" class="tab-panel" role="tabpanel">
+
+  <div class="section-grid">
+
+    <!-- Profile -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🧠</span> Bewusstseinsprofil</div>
+      <div id="psycho-profile-grid" class="subgenre-grid" style="grid-template-columns:repeat(3,1fr)"></div>
+      <div id="psycho-profile-desc" class="font-mono text-dim mt-12" style="font-size:0.65rem;line-height:1.5">—</div>
+    </div>
+
+    <!-- Effects -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🎛️</span> Effekte aktiv</div>
+      <div id="psycho-effect-toggles" class="toggle-grid" style="grid-template-columns:1fr 1fr"></div>
+
+      <div class="section-divider" style="margin:12px 0"></div>
+
+      <!-- Binaural Carrier -->
+      <div class="card-title" style="margin-bottom:8px"><span class="icon">🔊</span> Binaural Carrier</div>
+      <div class="slider-row">
+        <span class="slider-label">Carrier Hz</span>
+        <input type="range" id="carrier-slider" min="100" max="400" step="10" value="200">
+        <span class="slider-value" id="carrier-value">200 Hz</span>
+      </div>
+      <div class="info-grid" style="grid-template-columns:1fr 1fr 1fr">
+        <div class="info-cell"><div class="info-cell-label">L Freq</div><div class="info-cell-value" id="psycho-carrier-l">200 Hz</div></div>
+        <div class="info-cell"><div class="info-cell-label">R Freq</div><div class="info-cell-value" id="psycho-carrier-r">206 Hz</div></div>
+        <div class="info-cell"><div class="info-cell-label">Beat Δ</div><div class="info-cell-value" id="psycho-beat-freq">6 Hz</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-grid mt-16">
+
+    <!-- Haas Effect -->
+    <div class="card">
+      <div class="card-title"><span class="icon">↔️</span> Haas Effect</div>
+      <div class="slider-row">
+        <span class="slider-label">Delay</span>
+        <input type="range" id="haas-slider" min="1" max="35" step="1" value="12">
+        <span class="slider-value" id="haas-value">12 ms</span>
+      </div>
+      <div class="info-grid">
+        <div class="info-cell"><div class="info-cell-label">Zone</div><div class="info-cell-value" id="haas-zone">Presence</div></div>
+        <div class="info-cell"><div class="info-cell-label">Effect</div><div class="info-cell-value" id="haas-effect" style="font-size:0.62rem">Haas-Zone: Space ohne Echo</div></div>
+      </div>
+    </div>
+
+    <!-- Isochronic + Room -->
+    <div class="card">
+      <div class="card-title"><span class="icon">⚡</span> Isochronic Pulse</div>
+      <div class="info-grid" style="grid-template-columns:1fr 1fr 1fr">
+        <div class="info-cell"><div class="info-cell-label">Period</div><div class="info-cell-value" id="iso-period">167 ms</div></div>
+        <div class="info-cell"><div class="info-cell-label">Pulse ON</div><div class="info-cell-value" id="iso-pulse">83 ms</div></div>
+        <div class="info-cell"><div class="info-cell-label">BPM eq.</div><div class="info-cell-value" id="iso-bpm-eq">360 BPM</div></div>
+      </div>
+
+      <div class="section-divider" style="margin:12px 0"></div>
+      <div class="card-title" style="margin-bottom:8px"><span class="icon">🏠</span> Room Acoustics</div>
+      <select id="room-select"></select>
+      <div id="room-info" class="font-mono text-dim mt-8" style="font-size:0.62rem">—</div>
+    </div>
+
+  </div>
+
+  <!-- Canvas Visualizer -->
+  <div class="card mt-16">
+    <div class="card-title"><span class="icon">📡</span> Binaural Visualizer (L/R + Isochronic)</div>
+    <canvas id="psycho-canvas" style="height:140px;width:100%"></canvas>
+  </div>
+
+  <!-- Psycho Output -->
+  <div class="output-box mt-16" style="border-color:var(--neon-purple);box-shadow:var(--glow-purple)">
+    <div class="output-label" style="color:var(--neon-purple)">🧠 PSYCHO SUNO TAGS</div>
+    <div class="output-text" id="psycho-output" style="color:var(--neon-purple)">—</div>
+    <div class="char-counter" id="psycho-char-count">0 chars</div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-purple" id="btn-copy-psycho">📋 Copy Psycho Tags</button>
+  </div>
+
+</section>
+
+<!-- ============================================================
+     PANEL: 4D AKUSTIK ENGINE
+     ============================================================ -->
+<section id="panel-4d" class="tab-panel" role="tabpanel">
+
+  <div class="section-grid">
+
+    <!-- XY Pad -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🎯</span> Spatial Position (XY-Pad)</div>
+      <div class="xy-pad-container" id="xy-pad">
+        <div class="xy-crosshair-h"></div>
+        <div class="xy-crosshair-v"></div>
+        <div class="xy-dot" id="xy-dot" style="left:50%;top:50%"></div>
+      </div>
+      <div class="xy-labels">
+        <span id="xy-azimuth">Az: 0°</span>
+        <span id="xy-elevation">El: 0°</span>
+      </div>
+
+      <div class="slider-row mt-12">
+        <span class="slider-label">Z Distance</span>
+        <input type="range" id="z-slider" min="0.1" max="20" step="0.1" value="3">
+        <span class="slider-value" id="z-value">3m</span>
+      </div>
+    </div>
+
+    <!-- Motion + Ambisonics -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🌀</span> Motion Path</div>
+      <div id="motion-grid" class="toggle-grid" style="grid-template-columns:repeat(2,1fr)"></div>
+
+      <div class="section-divider" style="margin:12px 0"></div>
+      <div class="card-title" style="margin-bottom:8px"><span class="icon">🔮</span> Ambisonics Order</div>
+      <div id="amb-order-grid" class="subgenre-grid" style="grid-template-columns:repeat(2,1fr)"></div>
+      <div id="amb-info" class="font-mono text-dim mt-8" style="font-size:0.62rem">—</div>
+    </div>
+
+  </div>
+
+  <div class="section-grid mt-16">
+
+    <!-- Depth + Doppler -->
+    <div class="card">
+      <div class="card-title"><span class="icon">📐</span> Depth Layer</div>
+      <div id="depth-grid" class="toggle-grid" style="grid-template-columns:1fr 1fr"></div>
+      <div class="section-divider" style="margin:12px 0"></div>
+      <div class="card-title" style="margin-bottom:8px"><span class="icon">🚀</span> Doppler Speed</div>
+      <div id="doppler-grid" class="toggle-grid" style="grid-template-columns:repeat(3,1fr)"></div>
+    </div>
+
+    <!-- Spatial Calculations -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🔢</span> Spatial Kalkulator</div>
+      <div class="info-grid" style="grid-template-columns:1fr 1fr">
+        <div class="info-cell"><div class="info-cell-label">ILD</div><div class="info-cell-value" id="calc-ild">0.0 dB</div></div>
+        <div class="info-cell"><div class="info-cell-label">ITD</div><div class="info-cell-value" id="calc-itd">0.000 ms</div></div>
+        <div class="info-cell"><div class="info-cell-label">Air Abs.</div><div class="info-cell-value" id="calc-air">0.006 dB</div></div>
+        <div class="info-cell"><div class="info-cell-label">Doppler ×</div><div class="info-cell-value" id="calc-doppler">×1.0000</div></div>
+      </div>
+      <div class="section-divider" style="margin:10px 0"></div>
+      <div class="card-title" style="margin-bottom:8px;font-size:0.62rem">B-Format Koeffizienten</div>
+      <div class="info-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="info-cell"><div class="info-cell-label">W</div><div class="info-cell-value" id="calc-W">0.707</div></div>
+        <div class="info-cell"><div class="info-cell-label">X</div><div class="info-cell-value" id="calc-X">1.000</div></div>
+        <div class="info-cell"><div class="info-cell-label">Y</div><div class="info-cell-value" id="calc-Y">0.000</div></div>
+        <div class="info-cell"><div class="info-cell-label">Z</div><div class="info-cell-value" id="calc-Z">0.000</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 4D Presets -->
+  <div class="card mt-16">
+    <div class="card-title"><span class="icon">💎</span> 4D Presets</div>
+    <div id="presets-4d" class="preset-grid"></div>
+  </div>
+
+  <!-- 3D Canvas -->
+  <div class="card mt-16">
+    <div class="card-title"><span class="icon">🌐</span> 3D Position Visualizer</div>
+    <canvas id="canvas-4d" style="height:200px;width:100%"></canvas>
+    <div class="btn-row">
+      <button class="btn btn-secondary btn-sm" id="btn-motion-toggle">▶ Motion Start</button>
+    </div>
+  </div>
+
+  <!-- 4D Output -->
+  <div class="output-box mt-16" style="border-color:var(--neon-cyan);box-shadow:var(--glow-cyan)">
+    <div class="output-label" style="color:var(--neon-cyan)">🌐 4D SUNO TAGS</div>
+    <div class="output-text" id="4d-output" style="color:var(--neon-cyan)">—</div>
+    <div class="char-counter" id="4d-char-count">0 chars</div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-secondary" id="btn-copy-4d">📋 Copy 4D Tags</button>
+  </div>
+
+</section>
+
+<!-- ============================================================
+     PANEL: MODULAR MATRIX
+     ============================================================ -->
+<section id="panel-matrix" class="tab-panel" role="tabpanel">
+
+  <!-- 3 Slots -->
+  <div class="section-grid section-grid three-col">
+
+    <!-- Core Slot -->
+    <div class="matrix-slot slot-active" id="matrix-slot-core">
+      <div class="slot-header">
+        <span class="slot-name text-cyan">⚡ CORE</span>
+        <button class="slot-toggle on" id="slot-toggle-core"></button>
+      </div>
+      <div class="font-mono text-dim" style="font-size:0.62rem">Subgenre + BPM + Sonic + Mood + Scale + Mix</div>
+      <div class="font-mono text-green mt-8" style="font-size:0.6rem">→ app.js buildPrompt()</div>
+    </div>
+
+    <!-- Psycho Slot -->
+    <div class="matrix-slot slot-active" id="matrix-slot-psycho">
+      <div class="slot-header">
+        <span class="slot-name text-purple">🧠 PSYCHO</span>
+        <button class="slot-toggle on" id="slot-toggle-psycho"></button>
+      </div>
+      <div class="font-mono text-dim" style="font-size:0.62rem">Binaural + Haas + Isochronic + Room</div>
+      <div class="font-mono text-green mt-8" style="font-size:0.6rem">→ psycho.js PSYCHO_TAGS</div>
+    </div>
+
+    <!-- 4D Slot -->
+    <div class="matrix-slot slot-active" id="matrix-slot-4d">
+      <div class="slot-header">
+        <span class="slot-name text-cyan">🌐 4D</span>
+        <button class="slot-toggle on" id="slot-toggle-4d"></button>
+      </div>
+      <div class="font-mono text-dim" style="font-size:0.62rem">XY + Z + Motion + Ambisonics + Doppler</div>
+      <div class="font-mono text-green mt-8" style="font-size:0.6rem">→ engine4d.js ENGINE_4D_TAGS</div>
+    </div>
+
+  </div>
+
+  <!-- Matrix Factory Presets -->
+  <div class="card mt-16">
+    <div class="card-title"><span class="icon">💎</span> Matrix Presets</div>
+    <div id="matrix-factory-presets" class="preset-grid" style="grid-template-columns:repeat(2,1fr)"></div>
+    <div class="section-divider" style="margin:12px 0"></div>
+    <div class="card-title" style="margin-bottom:8px;font-size:0.62rem">User Matrix Presets</div>
+    <div id="matrix-user-presets" style="display:flex;gap:6px;flex-wrap:wrap">
+      <span class="text-muted font-mono" style="font-size:0.62rem">Keine User-Presets</span>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+      <input type="text" id="matrix-preset-name" placeholder="Preset Name..." style="flex:1;min-width:120px">
+      <button class="btn btn-purple btn-sm" id="btn-save-matrix-preset">💾 Save</button>
+    </div>
+  </div>
+
+  <!-- Compatibility Matrix -->
+  <div class="card mt-16">
+    <div class="card-title"><span class="icon">🔗</span> Kompatibilitäts-Matrix</div>
+    <table class="compat-table">
+      <thead>
+        <tr>
+          <th>Kombination</th>
+          <th>Status</th>
+          <th>Hinweis</th>
+        </tr>
+      </thead>
+      <tbody id="compat-table-body">
+        <tr><td colspan="3" style="color:var(--text-muted);text-align:center">Lade Matrix…</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Master Output -->
+  <div class="output-box mt-16">
+    <div class="output-label">⚙️ MASTER PROMPT — 200 CHAR MERGED</div>
+    <div class="output-text" id="matrix-output">—</div>
+    <div class="char-counter" id="matrix-char-count">0/200</div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-primary" id="btn-copy-matrix">📋 Copy Master Prompt</button>
+    <button class="btn btn-secondary" id="btn-rebuild-matrix">🔄 Rebuild</button>
+  </div>
+
+</section>
+
+<!-- ============================================================
+     PANEL: AUDIT
+     ============================================================ -->
+<section id="panel-audit" class="tab-panel" role="tabpanel">
+  <div class="section-grid">
+    <div class="card">
+      <div class="card-title"><span class="icon">📊</span> Prompt Audit</div>
+      <div class="audit-score text-pink" id="audit-score">—</div>
+      <div class="audit-grade text-dim" id="audit-grade">Grade: ?</div>
+      <ul class="audit-items" id="audit-list">
+        <li><span>Noch kein Audit gestartet</span><span class="text-muted">—</span></li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btn-run-audit">▶ Audit starten</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="icon">ℹ️</span> Suno Tips</div>
+      <ul class="audit-items">
+        <li><span>Suno versteht explizite Bass-Beschreibungen besser als Genre-Labels</span><span class="audit-warn">⚠</span></li>
+        <li><span>"distorted acid bassline with sidechain" > "psytrance bass"</span><span class="audit-pass">✓</span></li>
+        <li><span>Max 200 Zeichen im Style-Feld (Custom Mode)</span><span class="audit-pass">✓</span></li>
+        <li><span>Comma-separated Tags funktionieren am zuverlässigsten</span><span class="audit-pass">✓</span></li>
+        <li><span>BPM-Angabe hilft Suno beim Tempo</span><span class="audit-pass">✓</span></li>
+        <li><span>v5.5: Instrumentale ohne Lyrics mit [Instrumental] Tag</span><span class="audit-pass">✓</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PANEL: ORCHESTRA
+     ============================================================ -->
+<section id="panel-orch" class="tab-panel" role="tabpanel">
+  <div class="card">
+    <div class="card-title"><span class="icon">🎼</span> Multi-Layer Orchestra Builder</div>
+    <p class="text-dim font-mono mb-12" style="font-size:0.65rem">Baue Layer-basierte Prompts — jeder Layer hat eine eigene Rolle und ein eigenes Subgenre</p>
+    <div id="orchestra-layers"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary btn-sm" id="btn-orch-add">+ Layer hinzufügen</button>
+      <button class="btn btn-primary" id="btn-orch-build">🎼 Build Orchestra Prompt</button>
+    </div>
+  </div>
+  <div class="output-box mt-16" style="border-color:var(--neon-orange)">
+    <div class="output-label" style="color:var(--neon-orange)">🎼 ORCHESTRA OUTPUT</div>
+    <div class="output-text" id="orch-output" style="color:var(--neon-orange)">—</div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PANEL: BACKUP / REGISTER
+     ============================================================ -->
+<section id="panel-backup" class="tab-panel" role="tabpanel">
+  <div class="section-grid">
+
+    <!-- Snapshots -->
+    <div class="card">
+      <div class="card-title"><span class="icon">📸</span> Session Snapshots</div>
+      <div id="snapshot-list">
+        <span class="text-muted font-mono" style="font-size:0.62rem">Keine Snapshots</span>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary btn-sm" id="btn-snapshot">📸 Snapshot</button>
+        <button class="btn btn-secondary btn-sm" id="btn-export-json">📤 Export JSON</button>
+        <label class="btn btn-secondary btn-sm" style="cursor:pointer">
+          📥 Import JSON
+          <input type="file" id="import-input" accept=".json" style="display:none">
+        </label>
+      </div>
+    </div>
+
+    <!-- Register -->
+    <div class="card">
+      <div class="card-title"><span class="icon">📚</span> Preset Register</div>
+      <div class="font-mono text-dim mb-8" style="font-size:0.62rem">Factory Presets</div>
+      <div id="factory-presets" class="preset-grid"></div>
+      <div class="section-divider" style="margin:12px 0"></div>
+      <div class="font-mono text-dim mb-8" style="font-size:0.62rem">User Presets</div>
+      <div id="user-presets">
+        <span class="text-muted font-mono" style="font-size:0.62rem">Keine gespeicherten Presets</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+        <input type="text" id="preset-name-input" placeholder="Preset Name..." style="flex:1;min-width:120px">
+        <button class="btn btn-green btn-sm" id="btn-save-preset">💾 Speichern</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<!-- ============================================================
+     BOTTOM NAV (Mobile)
+     ============================================================ -->
+<nav class="bottom-nav" role="navigation" aria-label="Mobile Navigation">
+  <div class="bottom-nav-inner">
+    <button class="bnav-btn active" data-tab="core">
+      <span class="bnav-icon">⚡</span>
+      <span class="bnav-label">Core</span>
+    </button>
+    <button class="bnav-btn" data-tab="visual">
+      <span class="bnav-icon">🎨</span>
+      <span class="bnav-label">Visual</span>
+    </button>
+    <button class="bnav-btn" data-tab="lyric">
+      <span class="bnav-icon">📝</span>
+      <span class="bnav-label">Lyric</span>
+    </button>
+    <button class="bnav-btn" data-tab="psycho">
+      <span class="bnav-icon">🧠</span>
+      <span class="bnav-label">Psycho</span>
+    </button>
+    <button class="bnav-btn" data-tab="4d">
+      <span class="bnav-icon">🌐</span>
+      <span class="bnav-label">4D</span>
+    </button>
+    <button class="bnav-btn" data-tab="matrix">
+      <span class="bnav-icon">⚙️</span>
+      <span class="bnav-label">Matrix</span>
+    </button>
+    <button class="bnav-btn" data-tab="audit">
+      <span class="bnav-icon">📊</span>
+      <span class="bnav-label">Audit</span>
+    </button>
+    <button class="bnav-btn" data-tab="orch">
+      <span class="bnav-icon">🎼</span>
+      <span class="bnav-label">Orch</span>
+    </button>
+    <button class="bnav-btn" data-tab="backup">
+      <span class="bnav-icon">💾</span>
+      <span class="bnav-label">Backup</span>
+    </button>
+  </div>
+</nav>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<!-- Scripts: app.js first (exposes globals), then modules -->
+<script src="./app.js"></script>
+<script src="./psycho.js"></script>
+<script src="./engine4d.js"></script>
+<script src="./matrix.js"></script>
+
+</body>
+</html>
