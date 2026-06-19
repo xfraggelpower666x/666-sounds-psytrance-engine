@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./mobile.css">
   <link rel="stylesheet" href="./lyric.css">
+  <link rel="stylesheet" href="./juno.model.css">
 </head>
 <body>
 
@@ -35,6 +36,7 @@
     <button class="tab-btn"        data-tab="audit"   role="tab">📊 Audit</button>
     <button class="tab-btn"        data-tab="orch"    role="tab">🎼 Orch</button>
     <button class="tab-btn"        data-tab="backup"  role="tab">💾 Backup</button>
+    <button class="tab-btn"        data-tab="model"   role="tab">🎵 Modell</button>
   </nav>
 </header>
 
@@ -96,9 +98,9 @@
 
   <!-- Output -->
   <div class="output-box">
-    <div class="output-label">⚡ SUNO STYLE TAG — 200 CHAR</div>
+    <div class="output-label">⚡ JUNO STYLE TAG — 1000 CHAR</div>
     <div class="output-text" id="prompt-output">—</div>
-    <div class="char-counter char-ok" id="char-count">0/200</div>
+    <div class="char-counter char-ok" id="char-count">0/1000</div>
   </div>
 
   <div class="btn-row">
@@ -356,7 +358,7 @@
   <div class="extended-prompt-block" id="extended-prompt-block" style="display:none">
     <div class="extended-prompt-header">
       <span class="extended-prompt-title">⚡ Extended Prompt</span>
-      <span class="extended-prompt-char-count" id="extended-prompt-char-count">0 / 200</span>
+      <span class="extended-prompt-char-count" id="extended-prompt-char-count">0 / 800</span>
     </div>
     <textarea class="extended-prompt-textarea" id="extended-prompt-text" rows="4" readonly></textarea>
     <div class="extended-prompt-footer">
@@ -631,9 +633,9 @@
 
   <!-- Master Output -->
   <div class="output-box mt-16">
-    <div class="output-label">⚙️ MASTER PROMPT — 200 CHAR MERGED</div>
+    <div class="output-label">⚙️ MASTER STYLE — 1000 CHAR (JUNO)</div>
     <div class="output-text" id="matrix-output">—</div>
-    <div class="char-counter" id="matrix-char-count">0/200</div>
+    <div class="char-counter" id="matrix-char-count">0/1000</div>
   </div>
   <div class="btn-row">
     <button class="btn btn-primary" id="btn-copy-matrix">📋 Copy Master Prompt</button>
@@ -737,6 +739,20 @@
 <!-- ============================================================
      BOTTOM NAV (Mobile)
      ============================================================ -->
+
+<!-- ============================================================
+     PANEL: JUNO MODELL SWITCHER
+     ============================================================ -->
+<section id="panel-model" class="tab-panel" role="tabpanel">
+<div style="padding:16px;display:flex;flex-direction:column;gap:14px;">
+
+  <div id="juno-model-section">
+    <!-- Rendered by juno.model.js -->
+  </div>
+
+</div>
+</section>
+
 <nav class="bottom-nav" role="navigation" aria-label="Mobile Navigation">
   <div class="bottom-nav-inner">
     <button class="bnav-btn active" data-tab="core">
@@ -775,6 +791,10 @@
       <span class="bnav-icon">💾</span>
       <span class="bnav-label">Backup</span>
     </button>
+    <button class="bnav-btn" data-tab="model">
+      <span>🎵</span>
+      <span>Modell</span>
+    </button>
   </div>
 </nav>
 
@@ -782,6 +802,7 @@
 <div id="toast" class="toast"></div>
 
 <!-- Scripts: app.js first (exposes globals), then modules -->
+<script src="./juno.model.js"></script>
 <script src="./app.js"></script>
 <script src="./psycho.js"></script>
 <script src="./engine4d.js"></script>

@@ -1,6 +1,6 @@
 /* ============================================================
    666 SOUNDS DESIGN — matrix.js
-   Modular Matrix: Core + Psycho + 4D → 200-char Master Prompt
+   Modular Matrix: Core + Psycho + 4D → 1000-char Master Style Prompt (Juno)
    ============================================================ */
 
 'use strict';
@@ -209,11 +209,12 @@ function buildMatrixPrompt() {
   merged = compressTags(merged);
   merged = deduplicateTags(merged);
 
-  // Trim to 200 chars
-  if (merged.length > 200) {
-    merged = merged.substring(0, 200);
+  // Trim to Juno Style limit (1000 chars)
+  const STYLE_LIMIT = (window.JUNO_LIMITS && window.JUNO_LIMITS.style) || 1000;
+  if (merged.length > STYLE_LIMIT) {
+    merged = merged.substring(0, STYLE_LIMIT);
     const lastComma = merged.lastIndexOf(',');
-    if (lastComma > 150) merged = merged.substring(0, lastComma);
+    if (lastComma > STYLE_LIMIT * 0.85) merged = merged.substring(0, lastComma);
   }
 
   const el = document.getElementById('matrix-output');
@@ -222,8 +223,10 @@ function buildMatrixPrompt() {
   const counter = document.getElementById('matrix-char-count');
   if (counter) {
     const len = merged.length;
-    counter.textContent = `${len}/200`;
-    counter.className = 'char-counter ' + (len > 200 ? 'char-over' : len > 185 ? 'char-warn' : 'char-ok');
+    const limit = (window.JUNO_LIMITS && window.JUNO_LIMITS.style) || 1000;
+    const warnAt = Math.floor(limit * 0.92);
+    counter.textContent = `${len}/${limit}`;
+    counter.className = 'char-counter ' + (len > limit ? 'char-over' : len > warnAt ? 'char-warn' : 'char-ok');
   }
 
   window.MATRIX_MASTER_PROMPT = merged;

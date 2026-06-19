@@ -1,0 +1,418 @@
+/* ============================================================
+   JUNO MODEL SWITCHER — 666 SOUNDS DESIGN
+   Model cards: v5.5 Pro, Custom 1/2/3, v4.5
+   ============================================================ */
+
+/* ── Section container ───────────────────────────────────────── */
+#juno-model-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── Header Bar ──────────────────────────────────────────────── */
+.juno-model-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(0,229,255,0.05);
+  border: 1px solid rgba(0,229,255,0.18);
+  border-radius: 10px;
+}
+
+.juno-model-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.juno-model-header-icon {
+  font-size: 16px;
+}
+
+.juno-model-header-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(0,229,255,0.9);
+  letter-spacing: 2px;
+}
+
+.juno-model-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid;
+  transition: all 0.3s ease;
+}
+
+.juno-model-badge[data-tier="pro"] {
+  background: rgba(0,229,255,0.12);
+  border-color: rgba(0,229,255,0.5);
+  color: #00e5ff;
+  box-shadow: 0 0 8px rgba(0,229,255,0.25);
+}
+
+.juno-model-badge[data-tier="custom"] {
+  background: rgba(201,47,255,0.12);
+  border-color: rgba(201,47,255,0.5);
+  color: #c92fff;
+  box-shadow: 0 0 8px rgba(201,47,255,0.25);
+}
+
+.juno-model-badge[data-tier="fallback"] {
+  background: rgba(255,122,0,0.12);
+  border-color: rgba(255,122,0,0.5);
+  color: #ff7a00;
+  box-shadow: 0 0 8px rgba(255,122,0,0.2);
+}
+
+/* ── Model Cards Stack ───────────────────────────────────────── */
+.juno-model-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ── Individual Card ─────────────────────────────────────────── */
+.juno-model-card {
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  outline: none;
+}
+
+.juno-model-card:hover {
+  border-color: rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.04);
+}
+
+/* Active states per tier */
+.juno-model-card.active.tier-pro {
+  border-color: #00e5ff;
+  background: rgba(0,229,255,0.07);
+  box-shadow: 0 0 16px rgba(0,229,255,0.2), inset 0 0 20px rgba(0,229,255,0.05);
+}
+
+.juno-model-card.active.tier-custom {
+  border-color: #c92fff;
+  background: rgba(201,47,255,0.07);
+  box-shadow: 0 0 16px rgba(201,47,255,0.2), inset 0 0 20px rgba(201,47,255,0.05);
+}
+
+.juno-model-card.active.tier-fallback {
+  border-color: #ff7a00;
+  background: rgba(255,122,0,0.07);
+  box-shadow: 0 0 16px rgba(255,122,0,0.2), inset 0 0 20px rgba(255,122,0,0.05);
+}
+
+/* ── Card Inner Layout ───────────────────────────────────────── */
+.juno-model-card-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  position: relative;
+}
+
+/* ── Radio Dot ───────────────────────────────────────────────── */
+.juno-model-radio {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.juno-model-card.tier-pro .juno-model-radio {
+  border-color: rgba(0,229,255,0.4);
+}
+.juno-model-card.tier-custom .juno-model-radio {
+  border-color: rgba(201,47,255,0.4);
+}
+.juno-model-card.tier-fallback .juno-model-radio {
+  border-color: rgba(255,122,0,0.4);
+}
+
+.juno-radio-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: transparent;
+  transition: all 0.2s ease;
+}
+
+.juno-radio-dot.active {
+  background: currentColor;
+}
+
+.juno-model-card.active.tier-pro .juno-radio-dot {
+  background: #00e5ff;
+  box-shadow: 0 0 6px rgba(0,229,255,0.8);
+}
+.juno-model-card.active.tier-custom .juno-radio-dot {
+  background: #c92fff;
+  box-shadow: 0 0 6px rgba(201,47,255,0.8);
+}
+.juno-model-card.active.tier-fallback .juno-radio-dot {
+  background: #ff7a00;
+  box-shadow: 0 0 6px rgba(255,122,0,0.8);
+}
+.juno-model-card.active.tier-pro .juno-model-radio {
+  border-color: #00e5ff;
+  box-shadow: 0 0 8px rgba(0,229,255,0.4);
+}
+.juno-model-card.active.tier-custom .juno-model-radio {
+  border-color: #c92fff;
+  box-shadow: 0 0 8px rgba(201,47,255,0.4);
+}
+.juno-model-card.active.tier-fallback .juno-model-radio {
+  border-color: #ff7a00;
+  box-shadow: 0 0 8px rgba(255,122,0,0.4);
+}
+
+/* ── Model Info ──────────────────────────────────────────────── */
+.juno-model-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.juno-model-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.juno-model-icon {
+  font-size: 14px;
+}
+
+.juno-model-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+}
+
+.juno-model-card.active .juno-model-label {
+  color: #fff;
+}
+
+.juno-model-sublabel {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.juno-model-card.active.tier-pro .juno-model-sublabel {
+  color: rgba(0,229,255,0.6);
+}
+.juno-model-card.active.tier-custom .juno-model-sublabel {
+  color: rgba(201,47,255,0.6);
+}
+.juno-model-card.active.tier-fallback .juno-model-sublabel {
+  color: rgba(255,122,0,0.6);
+}
+
+/* ── Custom Name Input ───────────────────────────────────────── */
+.juno-custom-name-input {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 5px 8px;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(201,47,255,0.2);
+  border-radius: 6px;
+  color: rgba(201,47,255,0.9);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.juno-custom-name-input:focus {
+  border-color: #c92fff;
+  box-shadow: 0 0 6px rgba(201,47,255,0.3);
+}
+
+.juno-custom-name-input::placeholder {
+  color: rgba(201,47,255,0.3);
+  font-style: italic;
+}
+
+/* ── Active Tag (top-right badge) ────────────────────────────── */
+.juno-model-active-tag {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+.tier-pro .juno-model-active-tag {
+  background: rgba(0,229,255,0.15);
+  border: 1px solid rgba(0,229,255,0.4);
+  color: #00e5ff;
+}
+.tier-custom .juno-model-active-tag {
+  background: rgba(201,47,255,0.15);
+  border: 1px solid rgba(201,47,255,0.4);
+  color: #c92fff;
+}
+.tier-fallback .juno-model-active-tag {
+  background: rgba(255,122,0,0.15);
+  border: 1px solid rgba(255,122,0,0.4);
+  color: #ff7a00;
+}
+
+/* ── Lyric Style Hint (shown on active card) ─────────────────── */
+.juno-model-style-hint {
+  padding: 8px 14px 10px 46px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  line-height: 1.5;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  animation: fadeInHint 0.25s ease;
+}
+
+@keyframes fadeInHint {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.tier-pro .juno-model-style-hint {
+  color: rgba(0,229,255,0.55);
+  border-top-color: rgba(0,229,255,0.1);
+}
+.tier-custom .juno-model-style-hint {
+  color: rgba(201,47,255,0.55);
+  border-top-color: rgba(201,47,255,0.1);
+}
+.tier-fallback .juno-model-style-hint {
+  color: rgba(255,122,0,0.55);
+  border-top-color: rgba(255,122,0,0.1);
+}
+
+/* ── Limits Row ──────────────────────────────────────────────── */
+.juno-limits-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.juno-limit-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 6px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px;
+  gap: 3px;
+}
+
+.juno-limit-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.juno-limit-value {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(0,229,255,0.8);
+}
+
+/* ── Persistent Model Badge (floating, visible in all tabs) ──── */
+.juno-floating-badge {
+  position: fixed;
+  top: 10px;
+  right: 12px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  border: 1px solid;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  backdrop-filter: blur(8px);
+}
+
+.juno-floating-badge[data-tier="pro"] {
+  background: rgba(0,0,10,0.7);
+  border-color: rgba(0,229,255,0.5);
+  color: #00e5ff;
+  box-shadow: 0 0 10px rgba(0,229,255,0.2);
+}
+
+.juno-floating-badge[data-tier="custom"] {
+  background: rgba(0,0,10,0.7);
+  border-color: rgba(201,47,255,0.5);
+  color: #c92fff;
+  box-shadow: 0 0 10px rgba(201,47,255,0.2);
+}
+
+.juno-floating-badge[data-tier="fallback"] {
+  background: rgba(0,0,10,0.7);
+  border-color: rgba(255,122,0,0.5);
+  color: #ff7a00;
+  box-shadow: 0 0 10px rgba(255,122,0,0.2);
+}
+
+.juno-floating-badge:hover {
+  transform: scale(1.05);
+}
+
+.juno-floating-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 4px currentColor;
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 380px) {
+  .juno-limits-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .juno-limit-value {
+    font-size: 12px;
+  }
+}

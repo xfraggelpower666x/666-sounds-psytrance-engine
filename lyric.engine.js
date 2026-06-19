@@ -101,7 +101,17 @@ async function generateAILyrics({ subgenreId, keywords, bpm, moods, additionalCo
   const template = window.LYRIC_TEMPLATES?.[subgenreId];
   if (!template) throw new Error(`Unbekanntes Subgenre: ${subgenreId}`);
 
-  const systemPrompt = template.systemPrompt;
+  // Model-aware adjustments
+  const activeModel  = window.JUNO_ACTIVE_MODEL;
+  const modelSuffix  = activeModel ? activeModel.lyricStyle.promptSuffix : '';
+  const structHint   = activeModel ? activeModel.lyricStyle.structureHint : '';
+  const maxSections  = activeModel ? activeModel.lyricStyle.maxSections : 12;
+  const complexity   = activeModel ? activeModel.lyricStyle.complexity : 'high';
+
+  const systemPromptBase = template.systemPrompt;
+  const systemPrompt = systemPromptBase + (modelSuffix
+    ? `\n\nModell-Hinweis: ${structHint}\nStil: ${modelSuffix}`
+    : '');
   const moodStr  = moods && moods.length ? `Mood: ${moods.join(', ')}.` : '';
   const kwStr    = keywords ? `Keywords / Themen: ${keywords}.` : '';
   const ctxStr   = additionalContext ? `Zusätzlicher Kontext: ${additionalContext}` : '';
@@ -116,7 +126,7 @@ Wichtige Regeln:
 - Nutze [Section]-Tags um Energie und Arrangement zu steuern
 - Füge Energie-Direktiven in (Klammern) ein
 - Die Lyrics STEUERN den Track — sie sind Arrangement-Anweisungen
-- Halte es unter 400 Wörter
+- Max ${maxSections} Sections, Komplexität: ${complexity}
 - Formatiere sauber mit Leerzeilen zwischen Sections`;
 
   return await callOpenAI({
@@ -138,7 +148,12 @@ async function generateLyricsFromImage({ imageBase64, imageMimeType = 'image/jpe
   const template = window.LYRIC_TEMPLATES?.[subgenreId];
   if (!template) throw new Error(`Unbekanntes Subgenre: ${subgenreId}`);
 
-  const systemPrompt = `${template.systemPrompt}
+  // Model-aware
+  const imgModel     = window.JUNO_ACTIVE_MODEL;
+  const imgSuffix    = imgModel ? imgModel.lyricStyle.promptSuffix : '';
+  const imgHint      = imgModel ? imgModel.lyricStyle.structureHint : '';
+
+  const systemPrompt = `${template.systemPrompt}${imgSuffix ? '\nStil: ' + imgSuffix : ''}
   
 Du analysierst ZUERST das Bild und extrahierst: Stimmung, Farben, Energie, Symbole, Atmosphäre.
 Dann schreibst du Psytrance-Lyrics die von dieser Bildstimmung inspiriert sind.
@@ -210,7 +225,7 @@ function fileToBase64(file) {
 /**
  * Baut den Extended Prompt aus:
  * - Lyrik-Direktiven (steuern Energie/Stimmung)
- * - Style-Ergänzungen (was nicht im 200-char Style-Tag Platz hat)
+ * - Style-Ergänzungen für das Extended Prompt Feld (800 Zeichen, Juno)
  * - Arrangement-Hinweise
  *
  * PRINZIP: Wenn die Lyrik die Energie steuert (via Section-Tags),
@@ -231,7 +246,7 @@ function buildExtendedPrompt({ subgenreId, bpm, moods, sonicElements, psychoTags
     parts.push(`mood: ${moods.join(', ')}`);
   }
 
-  // Sonic-Details die nicht in 200-char passen
+  // Sonic-Details für Extended Prompt (800-Zeichen Juno-Feld)
   if (sonicElements && sonicElements.length > 2) {
     const extra = sonicElements.slice(2);
     parts.push(`additional elements: ${extra.join(', ')}`);
