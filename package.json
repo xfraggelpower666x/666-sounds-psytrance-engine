@@ -1,0 +1,17 @@
+{
+  "name": "666-sounds-psytrance-engine",
+  "version": "2.0.0",
+  "description": "Psychoacoustic Psytrance Prompt Generator for Suno AI Custom Mode (PWA)",
+  "private": true,
+  "scripts": {
+    "lint": "npm run lint:js && npm run lint:html",
+    "lint:js": "eslint app.js psycho.js engine4d.js matrix.js sw.js",
+    "lint:html": "html-validate index.html"
+  },
+  "keywords": ["psytrance", "suno", "pwa", "prompt-generator"],
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "html-validate": "^8.0.0"
+  }
+}

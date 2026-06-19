@@ -305,9 +305,9 @@ function update4DOutput() {
   if (doppler && doppler.tag) parts.push(doppler.tag);
 
   const tagStr = parts.join(', ');
-  const el = document.getElementById('4d-output');
+  const el = document.getElementById('out-4d');
   if (el) el.textContent = tagStr;
-  const counter = document.getElementById('4d-char-count');
+  const counter = document.getElementById('char-4d');
   if (counter) {
     counter.textContent = `${tagStr.length} chars`;
     counter.className = 'char-counter ' + (tagStr.length > 60 ? 'char-warn' : 'char-ok');
