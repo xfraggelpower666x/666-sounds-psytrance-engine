@@ -8,7 +8,7 @@
 const JUNO_LIMITS = {
   style:    1000,
   lyric:    5000,
-  extended:  800,
+  extended: 1000,
   title:      80
 };
 

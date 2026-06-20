@@ -225,7 +225,7 @@ function fileToBase64(file) {
 /**
  * Baut den Extended Prompt aus:
  * - Lyrik-Direktiven (steuern Energie/Stimmung)
- * - Style-Ergänzungen für das Extended Prompt Feld (800 Zeichen, Juno)
+ * - Style-Ergänzungen für das Extended Prompt Feld (1000 Zeichen, Juno)
  * - Arrangement-Hinweise
  *
  * PRINZIP: Wenn die Lyrik die Energie steuert (via Section-Tags),
@@ -246,10 +246,9 @@ function buildExtendedPrompt({ subgenreId, bpm, moods, sonicElements, psychoTags
     parts.push(`mood: ${moods.join(', ')}`);
   }
 
-  // Sonic-Details für Extended Prompt (800-Zeichen Juno-Feld)
-  if (sonicElements && sonicElements.length > 2) {
-    const extra = sonicElements.slice(2);
-    parts.push(`additional elements: ${extra.join(', ')}`);
+  // Standard Suno prompt elements
+  if (sonicElements && sonicElements.length) {
+    parts.push(`elements: ${sonicElements.join(', ')}`);
   }
 
   // Psycho-Tags (falls vorhanden)
@@ -258,11 +257,9 @@ function buildExtendedPrompt({ subgenreId, bpm, moods, sonicElements, psychoTags
   // 4D-Tags (falls vorhanden)
   if (engine4dTags) parts.push(engine4dTags);
 
-  // Custom Notes
   if (customNotes) parts.push(customNotes);
 
-  // Arrangement-Hinweis
-  const arrHint = (ep.arrangement || [])[0] || 'arrangement: intro-build-drop-breakdown-peak-outro';
+  const arrHint = 'arrangement: intro-build-drop-breakdown-peak-breakdown-peak-outro, lyrics lead the flow, pressure and release must follow lyric sections';
   parts.push(arrHint);
 
   return parts.filter(Boolean).join('. ');
@@ -314,23 +311,24 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initLyricPanel() {
-  // Mode switcher
-  document.querySelectorAll('[data-lyric-mode]').forEach(btn => {
+  document.querySelectorAll('.lyric-mode-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const mode = btn.dataset.lyricMode;
+      const mode = btn.dataset.mode;
       switchLyricMode(mode);
     });
   });
 
-  // API Key input
-  const keyInput = document.getElementById('openai-key-input');
-  const keySave  = document.getElementById('btn-save-openai-key');
-  const keyClear = document.getElementById('btn-clear-openai-key');
+  const keyInput = document.getElementById('lyric-api-key-input');
+  const keySave  = document.getElementById('lyric-api-key-save');
+  const imageInput = document.getElementById('lyric-image-input');
+  const imageGenerateBtn = document.getElementById('lyric-image-generate-btn');
+  const imageRemoveBtn = document.getElementById('lyric-image-remove');
+  let selectedImageFile = null;
 
   if (keyInput && LyricKeyManager.isSet()) {
-    keyInput.value = '••••••••••••••••••••' + LyricKeyManager.get().slice(-4);
-    updateKeyStatus(true);
+    keyInput.value = '••••••••••••••••••••••' + LyricKeyManager.get().slice(-4);
   }
+  updateKeyStatus(LyricKeyManager.isSet());
 
   keySave?.addEventListener('click', () => {
     const val = keyInput?.value?.trim();
@@ -338,86 +336,137 @@ function initLyricPanel() {
     try {
       LyricKeyManager.set(val);
       updateKeyStatus(true);
-      if (keyInput) keyInput.value = '••••••••••••••••••••' + val.slice(-4);
+      if (keyInput) keyInput.value = '••••••••••••••••••••••' + val.slice(-4);
       showLyricToast('API-Key gespeichert ✓');
     } catch(e) { showLyricToast(e.message); }
   });
 
-  keyClear?.addEventListener('click', () => {
-    LyricKeyManager.clear();
-    if (keyInput) keyInput.value = '';
-    updateKeyStatus(false);
-    showLyricToast('API-Key gelöscht');
-  });
+  const manualText = document.getElementById('lyric-manual-text');
+  if (manualText) {
+    manualText.addEventListener('input', () => {
+      const counter = document.getElementById('lyric-manual-char');
+      if (counter) counter.textContent = `${manualText.value.length} chars`;
+      updateSectionPreview(manualText.value);
+    });
+  }
 
-  // Template generation
-  document.getElementById('btn-gen-template')?.addEventListener('click', () => {
-    const subgenre = window.APP_STATE?.subgenre || 'dark';
-    const lyrics = generateTemplatelyrics(subgenre);
-    setLyricOutput(lyrics);
-    showLyricToast('Template-Lyrics generiert');
-  });
+  document.getElementById('lyric-manual-build-btn')?.addEventListener('click', buildExtendedPromptUI);
+  document.getElementById('lyric-ai-build-btn')?.addEventListener('click', buildExtendedPromptUI);
+  document.getElementById('lyric-image-build-btn')?.addEventListener('click', buildExtendedPromptUI);
 
-  // AI generation
-  document.getElementById('btn-gen-ai')?.addEventListener('click', async () => {
+  document.getElementById('lyric-ai-generate-btn')?.addEventListener('click', async () => {
     if (!LyricKeyManager.isSet()) {
-      showLyricToast('Kein API-Key — bitte in Settings eintragen');
-      document.getElementById('lyric-settings-panel')?.classList.remove('hidden');
+      showLyricToast('Kein API-Key — bitte in den Einstellungen eintragen');
       return;
     }
-    const keywords = document.getElementById('lyric-keywords')?.value?.trim() || '';
+    const keywords = document.getElementById('lyric-ai-keywords')?.value?.trim() || '';
     const subgenre = window.APP_STATE?.subgenre || 'dark';
     const bpm      = window.APP_STATE?.bpm || 148;
     const moods    = window.APP_STATE?.moods ? [...window.APP_STATE.moods] : [];
-    const context  = document.getElementById('lyric-context')?.value?.trim() || '';
 
-    setLyricLoading(true, 'KI generiert Lyrics…');
+    setLyricLoading(true, 'KI generiert Lyrics…', 'ai');
     try {
-      const lyrics = await generateAILyrics({ subgenreId: subgenre, keywords, bpm, moods, additionalContext: context });
-      setLyricOutput(lyrics);
+      const lyrics = await generateAILyrics({ subgenreId: subgenre, keywords, bpm, moods, additionalContext: '' });
+      const out = document.getElementById('lyric-ai-output-text');
+      if (out) out.value = lyrics;
+      updateSectionPreview(lyrics);
       showLyricToast('KI-Lyrics generiert ✓');
     } catch(e) {
       showLyricToast(`Fehler: ${e.message}`);
     } finally {
-      setLyricLoading(false);
+      setLyricLoading(false, 'KI generiert Lyrics…', 'ai');
     }
   });
 
-  // Image upload
-  document.getElementById('lyric-image-input')?.addEventListener('change', async (e) => {
+  document.getElementById('lyric-ai-copy-btn')?.addEventListener('click', () => {
+    const value = document.getElementById('lyric-ai-output-text')?.value || '';
+    navigator.clipboard.writeText(value).then(() => showLyricToast('KI-Lyrics kopiert!'));
+  });
+
+  document.getElementById('lyric-ai-use-btn')?.addEventListener('click', () => {
+    const value = document.getElementById('lyric-ai-output-text')?.value || '';
+    if (!value) return;
+    setLyricOutput(value, 'manual');
+    switchLyricMode('manual');
+    showLyricToast('KI-Lyrics übernommen');
+  });
+
+  document.getElementById('lyric-image-copy-btn')?.addEventListener('click', () => {
+    const value = document.getElementById('lyric-image-output-text')?.value || '';
+    navigator.clipboard.writeText(value).then(() => showLyricToast('Bild-Lyrics kopiert!'));
+  });
+
+  document.getElementById('lyric-image-use-btn')?.addEventListener('click', () => {
+    const value = document.getElementById('lyric-image-output-text')?.value || '';
+    if (!value) return;
+    setLyricOutput(value, 'manual');
+    switchLyricMode('manual');
+    showLyricToast('Bild-Lyrics übernommen');
+  });
+
+  function setImageControls(enabled) {
+    if (imageGenerateBtn) imageGenerateBtn.disabled = !enabled;
+    if (imageRemoveBtn) imageRemoveBtn.disabled = !enabled;
+  }
+
+  imageRemoveBtn?.addEventListener('click', () => {
+    selectedImageFile = null;
+    if (imageInput) imageInput.value = '';
+    const preview = document.getElementById('lyric-image-preview');
+    if (preview) {
+      preview.style.backgroundImage = '';
+      preview.classList.remove('has-image');
+    }
+    const out = document.getElementById('lyric-image-output-text');
+    if (out) out.value = '';
+    updateSectionPreview('');
+    setImageControls(false);
+  });
+
+  imageInput?.addEventListener('change', e => {
     const file = e.target.files[0];
+    selectedImageFile = file || null;
+    setImageControls(!!file);
     if (!file) return;
     if (!LyricKeyManager.isSet()) {
-      showLyricToast('Kein API-Key — bitte in Settings eintragen');
+      showLyricToast('Kein API-Key — bitte in den Einstellungen eintragen');
       return;
     }
 
-    // Preview image
     const preview = document.getElementById('lyric-image-preview');
     if (preview) {
       const url = URL.createObjectURL(file);
       preview.style.backgroundImage = `url(${url})`;
       preview.classList.add('has-image');
     }
+  });
 
-    setLyricLoading(true, 'Analysiere Bild…');
+  imageGenerateBtn?.addEventListener('click', async () => {
+    if (!selectedImageFile) return;
+    if (!LyricKeyManager.isSet()) {
+      showLyricToast('Kein API-Key — bitte in den Einstellungen eintragen');
+      return;
+    }
+
+    setLyricLoading(true, 'Analysiere Bild…', 'image');
     try {
-      const { base64, mimeType } = await fileToBase64(file);
+      const { base64, mimeType } = await fileToBase64(selectedImageFile);
       const subgenre = window.APP_STATE?.subgenre || 'dark';
       const bpm      = window.APP_STATE?.bpm || 148;
       const moods    = window.APP_STATE?.moods ? [...window.APP_STATE.moods] : [];
       const lyrics   = await generateLyricsFromImage({ imageBase64: base64, imageMimeType: mimeType, subgenreId: subgenre, bpm, moods });
-      setLyricOutput(lyrics);
+      const out = document.getElementById('lyric-image-output-text');
+      if (out) out.value = lyrics;
+      updateSectionPreview(lyrics);
       showLyricToast('Bild-Lyrics generiert ✓');
     } catch(e) {
       showLyricToast(`Fehler: ${e.message}`);
     } finally {
-      setLyricLoading(false);
+      setLyricLoading(false, 'Analysiere Bild…', 'image');
     }
   });
 
-  // Drag & Drop for image
-  const dropZone = document.getElementById('lyric-drop-zone');
+  const dropZone = document.getElementById('lyric-dropzone');
   if (dropZone) {
     dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
     dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
@@ -425,44 +474,15 @@ function initLyricPanel() {
       e.preventDefault();
       dropZone.classList.remove('drag-over');
       const file = e.dataTransfer.files[0];
-      if (file) {
-        const input = document.getElementById('lyric-image-input');
+      if (file && imageInput) {
         const dt = new DataTransfer();
         dt.items.add(file);
-        if (input) {
-          input.files = dt.files;
-          input.dispatchEvent(new Event('change'));
-        }
+        imageInput.files = dt.files;
+        imageInput.dispatchEvent(new Event('change'));
       }
     });
   }
 
-  // Section tag insert buttons
-  document.querySelectorAll('[data-insert-tag]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const tag = btn.dataset.insertTag;
-      insertTagIntoEditor(tag);
-    });
-  });
-
-  // Copy lyrics
-  document.getElementById('btn-copy-lyrics')?.addEventListener('click', () => {
-    const ta = document.getElementById('lyric-editor');
-    if (!ta) return;
-    navigator.clipboard.writeText(ta.value).then(() => showLyricToast('Lyrics kopiert!'));
-  });
-
-  // Build extended prompt
-  document.getElementById('btn-build-extended')?.addEventListener('click', buildExtendedPromptUI);
-
-  // Copy extended prompt
-  document.getElementById('btn-copy-extended')?.addEventListener('click', () => {
-    const el = document.getElementById('extended-prompt-output');
-    if (!el) return;
-    navigator.clipboard.writeText(el.textContent).then(() => showLyricToast('Extended Prompt kopiert!'));
-  });
-
-  // Section tag insert buttons
   document.querySelectorAll('[data-insert-tag]').forEach(btn => {
     btn.addEventListener('click', () => insertTagIntoEditor(btn.dataset.insertTag));
   });
@@ -473,20 +493,35 @@ function initLyricPanel() {
 // ============================================================
 
 function switchLyricMode(mode) {
-  document.querySelectorAll('[data-lyric-mode]').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.lyricMode === mode);
+  document.querySelectorAll('.lyric-mode-btn').forEach(btn => {
+    const active = btn.dataset.mode === mode;
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-selected', active ? 'true' : 'false');
   });
   ['manual', 'ai', 'image'].forEach(m => {
-    const panel = document.getElementById(`lyric-mode-${m}`);
-    if (panel) panel.classList.toggle('hidden', m !== mode);
+    const panel = document.getElementById(`lyric-panel-${m}`);
+    if (panel) panel.classList.toggle('active', m === mode);
   });
 }
 
-function setLyricOutput(text) {
-  const ta = document.getElementById('lyric-editor');
+function getActiveLyricMode() {
+  return document.querySelector('.lyric-mode-btn.active')?.dataset.mode || 'manual';
+}
+
+function getLyricTextarea(mode) {
+  if (mode === 'ai') return document.getElementById('lyric-ai-output-text');
+  if (mode === 'image') return document.getElementById('lyric-image-output-text');
+  return document.getElementById('lyric-manual-text');
+}
+
+function setLyricOutput(text, mode = 'manual') {
+  const ta = getLyricTextarea(mode);
   if (ta) {
     ta.value = text;
-    ta.dispatchEvent(new Event('input'));
+    if (mode === 'manual') {
+      const counter = document.getElementById('lyric-manual-char');
+      if (counter) counter.textContent = `${text.length} chars`;
+    }
   }
   updateSectionPreview(text);
 }
@@ -503,17 +538,15 @@ function updateSectionPreview(text) {
   }).join('');
 }
 
-function setLyricLoading(active, msg = 'Lädt…') {
-  const spinner = document.getElementById('lyric-spinner');
-  const spinnerMsg = document.getElementById('lyric-spinner-msg');
-  if (spinner) spinner.classList.toggle('hidden', !active);
-  if (spinnerMsg) spinnerMsg.textContent = msg;
+function setLyricLoading(active, msg = 'Lädt…', mode = 'ai') {
+  const spinner = mode === 'image'
+    ? document.getElementById('lyric-image-spinner')
+    : document.getElementById('lyric-ai-spinner');
+  if (spinner) spinner.classList.toggle('active', active);
 
-  // Disable buttons during load
-  ['btn-gen-ai', 'btn-gen-template'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.disabled = active;
-  });
+  const buttonId = mode === 'image' ? 'lyric-image-generate-btn' : 'lyric-ai-generate-btn';
+  const button = document.getElementById(buttonId);
+  if (button) button.disabled = active;
 }
 
 function updateKeyStatus(hasKey) {
@@ -524,15 +557,21 @@ function updateKeyStatus(hasKey) {
 }
 
 function insertTagIntoEditor(tag) {
-  const ta = document.getElementById('lyric-editor');
+  const mode = getActiveLyricMode();
+  const ta = getLyricTextarea(mode) || document.getElementById('lyric-manual-text');
   if (!ta) return;
-  const tagStr    = `\n[${tag}]\n`;
-  const pos       = ta.selectionStart;
-  const before    = ta.value.slice(0, pos);
-  const after     = ta.value.slice(ta.selectionEnd);
-  ta.value        = before + tagStr + after;
+
+  const tagStr = `\n[${tag}]\n`;
+  const pos = ta.selectionStart || ta.value.length;
+  const before = ta.value.slice(0, pos);
+  const after = ta.value.slice(ta.selectionEnd);
+  ta.value = before + tagStr + after;
   ta.selectionStart = ta.selectionEnd = pos + tagStr.length;
   ta.focus();
+  if (mode === 'manual') {
+    const counter = document.getElementById('lyric-manual-char');
+    if (counter) counter.textContent = `${ta.value.length} chars`;
+  }
   updateSectionPreview(ta.value);
 }
 
@@ -543,26 +582,40 @@ function buildExtendedPromptUI() {
   const sonic        = window.APP_STATE?.sonic ? [...window.APP_STATE.sonic] : [];
   const psychoTags   = window.PSYCHO_TAGS || '';
   const engine4dTags = window.ENGINE_4D_TAGS || '';
-  const customNotes  = document.getElementById('extended-custom-notes')?.value?.trim() || '';
+  const keywords     = document.getElementById('lyric-ai-keywords')?.value?.trim() || '';
+  const context      = document.getElementById('lyric-image-context')?.value?.trim() || '';
+  const lyricMode    = getActiveLyricMode();
+  const lyricText    = lyricMode === 'ai'
+    ? document.getElementById('lyric-ai-output-text')?.value || ''
+    : lyricMode === 'image'
+      ? document.getElementById('lyric-image-output-text')?.value || ''
+      : document.getElementById('lyric-manual-text')?.value || '';
 
-  // Map sonic IDs to tag strings
   const sonicTags = (window.APP_SONIC || [])
     .filter(s => sonic.includes(s.id))
     .map(s => s.tag);
+
+  const sectionHints = lyricText ? parseLyricSections(lyricText).map(s => `[${s.tag}]`).join(' -> ') : '';
+  const extraNote = [keywords, context, sectionHints].filter(Boolean).join('. ');
 
   const result = buildExtendedPrompt({
     subgenreId: subgenre,
     bpm, moods,
     sonicElements: sonicTags,
-    psychoTags, engine4dTags, customNotes
+    psychoTags, engine4dTags,
+    customNotes: extraNote
   });
 
-  const el = document.getElementById('extended-prompt-output');
-  if (el) el.textContent = result;
-  const counter = document.getElementById('extended-char-count');
+  const el = document.getElementById('extended-prompt-text');
+  if (el) el.value = result;
+  const block = document.getElementById('extended-prompt-block');
+  if (block) block.style.display = 'block';
+  const counter = document.getElementById('extended-prompt-char-count');
   if (counter) {
-    counter.textContent = `${result.length} chars`;
-    counter.className   = 'char-counter ' + (result.length > 600 ? 'char-warn' : 'char-ok');
+    const limit = 1000;
+    const warnAt = Math.floor(limit * 0.92);
+    counter.textContent = `${result.length} / ${limit}`;
+    counter.className = 'char-counter ' + (result.length > limit ? 'char-over' : result.length > warnAt ? 'char-warn' : 'char-ok');
   }
 }
 

@@ -493,21 +493,24 @@ function buildPrompt() {
   const g = SUBGENRES[state.subgenre];
   const sonicTags = SONIC_ELEMENTS.filter(s => state.sonic.has(s.id)).map(s => s.tag);
   const moodTags  = MOODS.filter(m => state.moods.has(m.id)).map(m => m.tag);
+  const psycho = window.PSYCHO_TAGS ? [`psychoacoustic depth: ${window.PSYCHO_TAGS}`] : [];
   const parts = [
     `${g.label} psytrance`,
     `${state.bpm} BPM`,
+    ...psycho,
+    ...moodTags,
     ...g.tags.slice(0, 2),
     ...sonicTags,
-    ...moodTags,
-    state.scale !== 'Phrygian' ? state.scale : '',
-    state.mixTrait
+    state.mixTrait,
+    state.scale !== 'Phrygian' ? state.scale : ''
   ].filter(Boolean);
   let prompt = parts.join(', ');
-  if (prompt.length > 200) {
-    // Trim to 200 chars at last comma
-    prompt = prompt.substring(0, 200);
+  const STYLE_LIMIT = 1000;
+  if (prompt.length > STYLE_LIMIT) {
+    // Trim to 1000 chars at last comma
+    prompt = prompt.substring(0, STYLE_LIMIT);
     const lastComma = prompt.lastIndexOf(',');
-    if (lastComma > 160) prompt = prompt.substring(0, lastComma);
+    if (lastComma > Math.floor(STYLE_LIMIT * 0.85)) prompt = prompt.substring(0, lastComma);
   }
   return prompt;
 }
@@ -526,10 +529,12 @@ function updatePromptOutput() {
   const prompt = buildPrompt();
   const el = document.getElementById('prompt-output');
   const counter = document.getElementById('char-count');
+  const STYLE_LIMIT = 1000;
+  const warnAt = Math.floor(STYLE_LIMIT * 0.92);
   if (el) el.textContent = prompt;
   if (counter) {
-    counter.textContent = `${prompt.length}/200`;
-    counter.className = 'char-counter ' + (prompt.length > 200 ? 'char-over' : prompt.length > 180 ? 'char-warn' : 'char-ok');
+    counter.textContent = `${prompt.length}/${STYLE_LIMIT}`;
+    counter.className = 'char-counter ' + (prompt.length > STYLE_LIMIT ? 'char-over' : prompt.length > warnAt ? 'char-warn' : 'char-ok');
   }
 }
 
@@ -597,9 +602,10 @@ function runAudit() {
   checks.push({ label: 'BPM im Psytrance-Bereich', pass: bpmOk, detail: `${state.bpm} BPM` });
   if (!bpmOk) score -= 10;
 
-  const charOk = prompt.length <= 200;
-  const charWarn = prompt.length >= 185;
-  checks.push({ label: `Zeichenlimit (${prompt.length}/200)`, pass: charOk, warn: charWarn, detail: charOk ? 'OK' : 'Zu lang!' });
+  const STYLE_LIMIT = 1000;
+  const charOk = prompt.length <= STYLE_LIMIT;
+  const charWarn = prompt.length >= Math.floor(STYLE_LIMIT * 0.92);
+  checks.push({ label: `Zeichenlimit (${prompt.length}/${STYLE_LIMIT})`, pass: charOk, warn: charWarn, detail: charOk ? 'OK' : 'Zu lang!' });
   if (!charOk) score -= 15;
   else if (charWarn) score -= 5;
 
