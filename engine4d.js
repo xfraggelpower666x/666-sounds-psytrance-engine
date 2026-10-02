@@ -348,7 +348,7 @@ function start4DCanvas() {
     canvas.height = canvas.offsetHeight || 200;
   }
   resize();
-  new ResizeObserver(resize).observe(canvas);
+  new ResizeObserver(() => { resize(); start(); }).observe(canvas);
 
   const trail = [];
   const MAX_TRAIL = 60;
@@ -371,8 +371,10 @@ function start4DCanvas() {
   }
 
   function draw() {
-    state4D.animFrame = requestAnimationFrame(draw);
+    state4D.animFrame = null;
+    if (!canDraw()) return;
     const W = canvas.width, H = canvas.height;
+    if (W < 40 || H < 40) return;
     ctx.fillStyle = '#03030a';
     ctx.fillRect(0, 0, W, H);
 
@@ -439,6 +441,43 @@ function start4DCanvas() {
     ctx.fillStyle = '#7878aa';
     ctx.font = '9px Share Tech Mono, monospace';
     ctx.fillText(`Az:${Math.round(pos.az)}° El:${Math.round(pos.el)}° Z:${state4D.z}m`, 6, H - 6);
+    state4D.animFrame = requestAnimationFrame(draw);
   }
-  draw();
+
+  function canDraw() {
+    return !document.hidden
+      && document.getElementById('panel-4d')?.classList.contains('active')
+      && canvas.width >= 40
+      && canvas.height >= 40;
+  }
+
+  function start() {
+    if (state4D.animFrame == null && canDraw()) {
+      state4D.animFrame = requestAnimationFrame(draw);
+    }
+  }
+
+  function stop() {
+    if (state4D.animFrame != null) cancelAnimationFrame(state4D.animFrame);
+    state4D.animFrame = null;
+  }
+
+  document.addEventListener('app:tabchange', () => {
+    if (document.getElementById('panel-4d')?.classList.contains('active')) {
+      resize();
+      start();
+    } else {
+      stop();
+    }
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stop();
+    else {
+      resize();
+      start();
+    }
+  });
+  window.addEventListener('resize', () => { resize(); start(); });
+  resize();
+  start();
 }

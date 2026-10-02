@@ -248,11 +248,13 @@ function startPsychoCanvas() {
     canvas.height = canvas.offsetHeight || 140;
   }
   resize();
-  new ResizeObserver(resize).observe(canvas);
+  new ResizeObserver(() => { resize(); start(); }).observe(canvas);
 
   function draw() {
-    psychoState.animFrame = requestAnimationFrame(draw);
+    psychoState.animFrame = null;
+    if (!canDraw()) return;
     const W = canvas.width, H = canvas.height;
+    if (W <= 0 || H <= 0) return;
     ctx.fillStyle = '#03030a';
     ctx.fillRect(0, 0, W, H);
 
@@ -299,6 +301,43 @@ function startPsychoCanvas() {
     ctx.fillText(`Δ: ${beatHz}Hz (${p.band})`, W/2 - 40, H/2 + 4);
 
     t += 0.03;
+    psychoState.animFrame = requestAnimationFrame(draw);
   }
-  draw();
+
+  function canDraw() {
+    return !document.hidden
+      && document.getElementById('panel-psycho')?.classList.contains('active')
+      && canvas.width > 0
+      && canvas.height > 0;
+  }
+
+  function start() {
+    if (psychoState.animFrame == null && canDraw()) {
+      psychoState.animFrame = requestAnimationFrame(draw);
+    }
+  }
+
+  function stop() {
+    if (psychoState.animFrame != null) cancelAnimationFrame(psychoState.animFrame);
+    psychoState.animFrame = null;
+  }
+
+  document.addEventListener('app:tabchange', () => {
+    if (document.getElementById('panel-psycho')?.classList.contains('active')) {
+      resize();
+      start();
+    } else {
+      stop();
+    }
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stop();
+    else {
+      resize();
+      start();
+    }
+  });
+  window.addEventListener('resize', () => { resize(); start(); });
+  resize();
+  start();
 }

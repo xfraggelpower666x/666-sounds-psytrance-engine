@@ -182,7 +182,7 @@ function getAmbisonicOrder(order) {
  */
 function ambisonicChannelCount(order) {
   if (order < 0 || order > 3) throw new Error('Order must be 0–3');
-  return (order + 1) ** 2;
+  return order === 0 ? 2 : (order + 1) ** 2;
 }
 
 // ─────────────────────────────────────────────────────────────

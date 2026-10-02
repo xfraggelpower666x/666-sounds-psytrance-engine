@@ -3,7 +3,7 @@
    Service Worker — PWA Offline Cache
    ============================================================ */
 
-const CACHE_NAME = '666-sounds-v1';
+const CACHE_NAME = '666-sounds-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -13,6 +13,11 @@ const ASSETS = [
   './psycho.js',
   './engine4d.js',
   './matrix.js',
+  './juno.model.js',
+  './lyric.css',
+  './juno.model.css',
+  './lyric.templates.js',
+  './lyric.engine.js',
   './manifest.json',
   './icon-192.svg',
   'https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Inter:wght@300;400;500;600&display=swap'

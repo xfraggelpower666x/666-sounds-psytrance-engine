@@ -193,7 +193,7 @@ function buildMatrixPrompt() {
   const parts = [];
 
   if (matrixState.coreActive && window.APP_buildPrompt) {
-    const core = window.APP_buildPrompt();
+    const core = window.APP_buildPrompt(false);
     if (core) parts.push(core);
   }
 
