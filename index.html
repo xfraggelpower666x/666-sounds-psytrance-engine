@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="./mobile.css">
   <link rel="stylesheet" href="./lyric.css">
   <link rel="stylesheet" href="./juno.model.css">
+  <link rel="stylesheet" href="./production.css">
 </head>
 <body>
 
@@ -37,6 +38,7 @@
     <button class="tab-btn"        data-tab="orch"    role="tab">🎼 Orch</button>
     <button class="tab-btn"        data-tab="backup"  role="tab">💾 Backup</button>
     <button class="tab-btn"        data-tab="model"   role="tab">🎵 Modell</button>
+    <button class="tab-btn"        data-tab="production" role="tab">🎛️ Studio</button>
   </nav>
 </header>
 
@@ -320,7 +322,6 @@
     </div>
 
     <div class="lyric-image-preview" id="lyric-image-preview">
-      <img id="lyric-image-thumb" src="" alt="Bild-Vorschau">
       <button class="image-remove-btn" id="lyric-image-remove" title="Bild entfernen">✕</button>
     </div>
 
@@ -658,7 +659,7 @@
         <li><span>Noch kein Audit gestartet</span><span class="text-muted">—</span></li>
       </ul>
       <div class="btn-row">
-        <button class="btn btn-primary" id="btn-run-audit">▶ Audit starten</button>
+        <button class="btn btn-primary" id="btn-run-audit-panel">▶ Audit starten</button>
       </div>
     </div>
     <div class="card">
@@ -707,7 +708,7 @@
         <span class="text-muted font-mono" style="font-size:0.62rem">Keine Snapshots</span>
       </div>
       <div class="btn-row">
-        <button class="btn btn-secondary btn-sm" id="btn-snapshot">📸 Snapshot</button>
+        <button class="btn btn-secondary btn-sm" id="btn-snapshot-panel">📸 Snapshot</button>
         <button class="btn btn-secondary btn-sm" id="btn-export-json">📤 Export JSON</button>
         <label class="btn btn-secondary btn-sm" style="cursor:pointer">
           📥 Import JSON
@@ -754,6 +755,608 @@
 </div>
 </section>
 
+<!-- ============================================================
+     PANEL: PRODUCTION ENGINE
+     ============================================================ -->
+<section id="panel-production" class="tab-panel" role="tabpanel" aria-label="Production Engine">
+  <div class="production-intro">
+    <div>
+      <h1>Production Engine</h1>
+      <p>Build export-ready generation, source, Studio 2 and custom FX briefs from your live Core prompt.</p>
+    </div>
+    <button class="btn btn-secondary" type="button" data-tab="core">Edit Core settings</button>
+  </div>
+
+  <div class="section-grid">
+    <article class="card">
+      <h2 class="card-title"><span class="icon">🎵</span> Production profile</h2>
+      <p class="production-note">These profiles shape the written brief only; this app does not connect to a generation API.</p>
+      <div class="production-models" id="modelButtons" role="group" aria-label="Production profile">
+        <button class="production-model active" type="button" data-model="v6" aria-pressed="true">
+          <strong>v6 · Controlled</strong><span>Polished, focused execution</span>
+        </button>
+        <button class="production-model" type="button" data-model="v6-wild" aria-pressed="false">
+          <strong>v6-wild · Exploratory</strong><span>Musical mutations and hybrids</span>
+        </button>
+        <button class="production-model" type="button" data-model="v6-mini" aria-pressed="false">
+          <strong>v6-mini · Sketch</strong><span>Concise, fast concept brief</span>
+        </button>
+      </div>
+      <div class="field production-field">
+        <label for="customStyle">Custom Style Layer</label>
+        <select id="customStyle">
+          <option value="">No Custom Style</option>
+          <option value="666SD_PsyTrance">666SD_PsyTrance</option>
+          <option value="666PoWeRsOuNd">666PoWeRsOuNd</option>
+          <option value="Lyvra Style">Lyvra Style</option>
+        </select>
+      </div>
+      <p class="production-note">Custom Style stays separate from sonic elements to reduce conflicting or duplicated instructions.</p>
+    </article>
+
+    <article class="card">
+      <h2 class="card-title"><span class="icon">🎚️</span> Generation direction</h2>
+      <div class="field production-field">
+        <label for="duration">Target duration</label>
+        <select id="duration">
+          <option value="02:30">02:30 · Loop / sketch</option>
+          <option value="04:00">04:00 · Standard arrangement</option>
+          <option value="06:00" selected>06:00 · Full journey</option>
+          <option value="08:00">08:00 · Long-form evolution</option>
+        </select>
+      </div>
+      <div class="production-range">
+        <label for="weirdness">Weirdness</label>
+        <input id="weirdness" type="range" min="0" max="100" value="56">
+        <output id="weirdnessOut" for="weirdness">56%</output>
+      </div>
+      <div class="production-range">
+        <label for="influence">Style influence</label>
+        <input id="influence" type="range" min="0" max="100" value="82">
+        <output id="influenceOut" for="influence">82%</output>
+      </div>
+      <div class="production-range">
+        <label for="diversity">Diversity</label>
+        <input id="diversity" type="range" min="0" max="100" value="24">
+        <output id="diversityOut" for="diversity">24%</output>
+      </div>
+      <button id="maxMode" class="btn btn-secondary production-max" type="button" aria-pressed="true">MAX MODE: ON</button>
+      <p class="production-note">Slider values guide the generated text; they are not sent as API parameters.</p>
+    </article>
+  </div>
+
+  <div class="section-grid production-workbench">
+    <article class="card">
+      <h2 class="card-title"><span class="icon">◉</span> Multi-source lab</h2>
+      <p class="production-note">Describe each source and its musical role. No files are uploaded or processed by this page.</p>
+      <div class="production-add-source">
+        <label class="visually-hidden" for="sourceType">Source type</label>
+        <select id="sourceType">
+          <option value="TEXT">Text / story / intent</option>
+          <option value="AUDIO">Audio / voice memo / demo</option>
+          <option value="TRACK">Existing track</option>
+          <option value="MIDI">MIDI seed / pattern</option>
+          <option value="IMAGE">Image / moodboard</option>
+          <option value="VIDEO">Video / moving mood</option>
+        </select>
+        <button id="addSource" class="btn btn-secondary btn-sm" type="button">+ Add source</button>
+      </div>
+      <div id="sourceContainer" class="production-source-list"></div>
+      <div class="field production-field">
+        <label for="sourceIntent">Global transformation intent</label>
+        <textarea id="sourceIntent" rows="3">Preserve rhythmic tension and hypnotic energy; transform the sources into a coherent, original dark psytrance production.</textarea>
+      </div>
+    </article>
+
+    <article class="card">
+      <h2 class="card-title"><span class="icon">⚡</span> Shared Core prompt</h2>
+      <p class="production-note">Production Engine uses the same subgenre, BPM, scale, mix, moods and sonic elements as Core.</p>
+      <div id="production-core-summary" class="production-core-summary" aria-live="polite"></div>
+      <div class="production-core-prompt" id="production-core-prompt"></div>
+      <button class="btn btn-secondary btn-sm" type="button" data-tab="core">Change shared Core prompt</button>
+    </article>
+  </div>
+
+  <div class="section-grid three-col production-studio-grid">
+    <article class="card">
+      <h2 class="card-title"><span class="icon">◫</span> Studio 2 targets</h2>
+      <div class="production-chips" id="studioTargets" role="group" aria-label="Studio 2 targets">
+        <button class="toggle-btn active" type="button" aria-pressed="true">Full generation</button>
+        <button class="toggle-btn" type="button" aria-pressed="false">Stem separation</button>
+        <button class="toggle-btn" type="button" aria-pressed="false">Replace section</button>
+        <button class="toggle-btn" type="button" aria-pressed="false">Extend arrangement</button>
+        <button class="toggle-btn" type="button" aria-pressed="false">Create MIDI</button>
+        <button class="toggle-btn" type="button" aria-pressed="false">Wavetable synth</button>
+      </div>
+      <p class="production-note">Select up to two targets for a focused Studio brief.</p>
+    </article>
+
+    <article class="card">
+      <h2 class="card-title"><span class="icon">✦</span> Custom FX lab</h2>
+      <div class="production-chips production-fx-grid" id="fxPresets" role="group" aria-label="Custom FX presets">
+        <button class="toggle-btn active" type="button" aria-pressed="true">HAAS SENTINEL</button>
+        <button class="toggle-btn" type="button" aria-pressed="false">SUB VOID GLUE</button>
+        <button class="toggle-btn" type="button" aria-pressed="false">CAVE SPIRAL</button>
+        <button class="toggle-btn" type="button" aria-pressed="false">ACID MUTATOR</button>
+        <button class="toggle-btn" type="button" aria-pressed="false">RITUAL PUMPER</button>
+        <button class="toggle-btn" type="button" aria-pressed="false">LASER FRACTURE</button>
+        <button class="toggle-btn" type="button" aria-pressed="false">STEREO PARASITE</button>
+        <button class="toggle-btn" type="button" aria-pressed="false">ORGANIC DEPTH FIELD</button>
+        <button class="toggle-btn" type="button" aria-pressed="false">SWARM MOTION</button>
+        <button class="toggle-btn" type="button" aria-pressed="false">MASK REVEAL</button>
+        <button class="toggle-btn" type="button" aria-pressed="false">DARK ORBIT</button>
+        <button class="toggle-btn" type="button" aria-pressed="false">DROP COLLAPSE</button>
+      </div>
+      <p class="production-note">Select up to two effect briefs.</p>
+    </article>
+
+    <article class="card">
+      <h2 class="card-title"><span class="icon">⛔</span> Negative style</h2>
+      <label class="visually-hidden" for="negative">Styles and elements to avoid</label>
+      <textarea id="negative" rows="6">pop hooks, rock guitars, acoustic instruments, tropical house, happy major-key melodies, trap drums, commercial EDM anthem, orchestral scoring</textarea>
+    </article>
+  </div>
+
+  <article class="card psycho-card production-psycho-card" id="psychoLab">
+    <div class="panel-head">
+      <div>
+        <h2 class="card-title"><span class="icon">↔️</span> 08 — Psychoacoustic Haas Lab</h2>
+        <p class="panel-hint">Stereo-Breite für Acid, FX und Atmos. Kick und Sub bleiben geschützt. This creates design briefs only; it does not process audio.</p>
+      </div>
+      <span class="psycho-badge" id="psychoStatus" role="status" aria-live="polite">MONO SAFE</span>
+    </div>
+    <div class="psycho-grid psycho-controls">
+      <div class="field production-field">
+        <label for="haasMode">Haas Mode</label>
+        <select id="haasMode">
+          <option value="off">Off</option>
+          <option value="static">Static stereo spread</option>
+          <option value="automated" selected>Automated stereo movement</option>
+          <option value="organic">Organic random motion</option>
+        </select>
+      </div>
+      <div class="field production-field">
+        <label for="haasTarget">Primary Target</label>
+        <select id="haasTarget">
+          <option value="acid harmonics">Acid harmonics</option>
+          <option value="kick">Kick (mono only — no Haas)</option>
+          <option value="subbass">Subbass below 120 Hz (mono only — no Haas)</option>
+          <option value="rolling bass mid layer">Rolling bass distortion / mid layer</option>
+          <option value="mid-bass texture">Mid-bass texture</option>
+          <option value="tribal percussion">Tribal percussion</option>
+          <option value="creature FX">Creature / insect FX</option>
+          <option value="atmospheric drones">Atmospheric drones</option>
+          <option value="transition FX">Transition FX</option>
+        </select>
+      </div>
+      <div class="field production-field">
+        <label for="haasPreset">Psycho Preset</label>
+        <select id="haasPreset">
+          <option value="darkForestSafe" selected>Dark Forest Safe Width</option>
+          <option value="acidOrbit">Acid Orbit</option>
+          <option value="creatureSwarm">Creature Swarm</option>
+          <option value="breakdownVoid">Breakdown Void</option>
+          <option value="dropCollapse">Drop Collapse</option>
+          <option value="custom">Custom</option>
+        </select>
+      </div>
+      <div class="field production-field">
+        <label for="haasDelay">Haas Delay</label>
+        <input id="haasDelay" type="range" min="0" max="40" value="15">
+        <output id="haasDelayOut" for="haasDelay">15 ms</output>
+      </div>
+      <div class="field production-field">
+        <label for="haasLowCut">Stereo Low Cut</label>
+        <input id="haasLowCut" type="range" min="120" max="1000" step="10" value="300">
+        <output id="haasLowCutOut" for="haasLowCut">300 Hz</output>
+      </div>
+      <div class="field production-field">
+        <label for="haasWidth">Stereo Width</label>
+        <input id="haasWidth" type="range" min="0" max="100" value="55">
+        <output id="haasWidthOut" for="haasWidth">55%</output>
+      </div>
+      <div class="field production-field">
+        <label for="haasMotion">Motion Rate</label>
+        <select id="haasMotion">
+          <option value="none">No movement</option>
+          <option value="slow" selected>Slow Drift</option>
+          <option value="bar">1 Bar</option>
+          <option value="halfbar">1/2 Bar</option>
+          <option value="sixteenth">1/16 Random</option>
+        </select>
+      </div>
+      <div class="field production-field">
+        <label for="haasOffset">L/R delay offset</label>
+        <input id="haasOffset" type="range" min="-8" max="8" step="0.5" value="0">
+        <output id="haasOffsetOut" for="haasOffset">L 0 ms / R 15 ms</output>
+      </div>
+      <div class="field production-field">
+        <label for="haasStereoSide">Delay direction</label>
+        <select id="haasStereoSide">
+          <option value="right" selected>Right delayed</option>
+          <option value="left">Left delayed</option>
+          <option value="alternating">Alternating</option>
+          <option value="random">Random micro-offset</option>
+        </select>
+      </div>
+      <div class="field production-field">
+        <label for="haasMotionDepth">Motion Depth</label>
+        <input id="haasMotionDepth" type="range" min="0" max="100" value="12">
+        <output id="haasMotionDepthOut" for="haasMotionDepth">12%</output>
+      </div>
+      <div class="field production-field">
+        <label for="haasCorrelationThreshold">Correlation Threshold</label>
+        <input id="haasCorrelationThreshold" type="range" min="-1" max="1" step="0.05" value="0.15">
+        <output id="haasCorrelationThresholdOut" for="haasCorrelationThreshold">+0.15</output>
+      </div>
+      <div class="field production-field">
+        <label for="haasAutoWidth">Auto Width Reduction</label>
+        <input id="haasAutoWidth" type="range" min="0" max="100" value="70">
+        <output id="haasAutoWidthOut" for="haasAutoWidth">70%</output>
+      </div>
+      <div class="field production-field">
+        <label for="haasKickSensitivity">Kick Transient Bypass</label>
+        <input id="haasKickSensitivity" type="range" min="0" max="100" value="60">
+        <output id="haasKickSensitivityOut" for="haasKickSensitivity">60%</output>
+      </div>
+      <div class="field production-field">
+        <label for="haasWetDry">Wet / dry mix</label>
+        <input id="haasWetDry" type="range" min="0" max="100" value="45">
+        <output id="haasWetDryOut" for="haasWetDry">45%</output>
+      </div>
+      <div class="field production-field">
+        <label for="haasOutputTrim">Output trim</label>
+        <input id="haasOutputTrim" type="range" min="-12" max="12" step="0.5" value="0">
+        <output id="haasOutputTrimOut" for="haasOutputTrim">0 dB</output>
+      </div>
+    </div>
+    <h3>Mono Safety Guard</h3>
+    <div class="production-chips" id="haasSafety" role="group" aria-label="Haas mono safety options">
+      <button class="toggle-btn active" type="button" data-safety="subMono" aria-pressed="true">Sub mono below 120 Hz</button>
+      <button class="toggle-btn active" type="button" data-safety="sideLowCut" aria-pressed="true">Side low-cut active</button>
+      <button class="toggle-btn active" type="button" data-safety="correlationMonitor" aria-pressed="true">Correlation monitor</button>
+      <button class="toggle-btn active" type="button" data-safety="kickTransientBypass" aria-pressed="true">Kick transient bypass</button>
+      <button class="toggle-btn active" type="button" data-safety="autoWidthReduction" aria-pressed="true">Auto-width reduction</button>
+      <button class="toggle-btn" type="button" data-safety="dropOnlyActivation" aria-pressed="false">Drop-only activation</button>
+    </div>
+    <button id="haasLimiter" class="btn btn-secondary btn-sm production-limiter" type="button" aria-pressed="true">Output limiter: ON</button>
+    <div class="psycho-output-grid">
+      <article class="psycho-output">
+        <span>Psycho Style Tag</span>
+        <pre id="psychoStyleOutput"></pre>
+      </article>
+      <article class="psycho-output">
+        <span>Studio 2 Automation Brief</span>
+        <pre id="haasAutomationOutput"></pre>
+      </article>
+      <article class="psycho-output">
+        <span>Custom Chat Plugin Brief</span>
+        <pre id="haasPluginOutput"></pre>
+      </article>
+    </div>
+  </article>
+
+  <section class="card motor-card" id="motorTools">
+    <div class="panel-head">
+      <div>
+        <h2 class="card-title">09 — Psytrance Motor Tools</h2>
+        <p class="panel-hint">Rolling bass, dry kick and mono-stable kick-bass architecture. These controls generate production briefs; they do not process audio.</p>
+      </div>
+      <span class="motor-badge" id="motorStatus" role="status" aria-live="polite">MOTOR STABLE</span>
+    </div>
+
+    <div class="motor-grid">
+      <div class="field production-field">
+        <label for="motorPreset">Motor Preset</label>
+        <select id="motorPreset">
+          <option value="darkRolling" selected>Dark Rolling Engine</option>
+          <option value="forestRubber">Forest Rubber Engine</option>
+          <option value="hitechPressure">Hi-Tech Pressure Engine</option>
+          <option value="zenoPulse">Zenonesque Pulse Engine</option>
+          <option value="custom">Custom</option>
+        </select>
+      </div>
+      <div class="field production-field">
+        <label for="bassPattern">Bass Pattern</label>
+        <select id="bassPattern">
+          <option value="rolling16" selected>Rolling 1/16</option>
+          <option value="offbeat">Offbeat</option>
+          <option value="triplet">Triplet Roll</option>
+          <option value="broken">Broken / Mutated Roll</option>
+          <option value="glide">Glide Bass Movement</option>
+        </select>
+      </div>
+      <div class="field production-field">
+        <label for="kickStyle">Kick Style</label>
+        <select id="kickStyle">
+          <option value="dryPunch" selected>Dry Punch</option>
+          <option value="shortClick">Short Click / Tight</option>
+          <option value="deepThump">Deep Thump</option>
+          <option value="forestKnock">Organic Forest Knock</option>
+          <option value="hitechSnap">Hi-Tech Snap</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="motor-grid motor-controls">
+      <div class="range-field">
+        <div class="range-label"><label for="kickLength">Kick Length</label><output id="kickLengthOut" for="kickLength">90 ms</output></div>
+        <input id="kickLength" type="range" min="40" max="180" value="90">
+      </div>
+      <div class="range-field">
+        <div class="range-label"><label for="kickClick">Kick Click</label><output id="kickClickOut" for="kickClick">26%</output></div>
+        <input id="kickClick" type="range" min="0" max="100" value="26">
+      </div>
+      <div class="range-field">
+        <div class="range-label"><label for="bassLength">Bass Note Length</label><output id="bassLengthOut" for="bassLength">72%</output></div>
+        <input id="bassLength" type="range" min="20" max="100" value="72">
+      </div>
+      <div class="range-field">
+        <div class="range-label"><label for="bassDrive">Bass Drive</label><output id="bassDriveOut" for="bassDrive">38%</output></div>
+        <input id="bassDrive" type="range" min="0" max="100" value="38">
+      </div>
+      <div class="range-field">
+        <div class="range-label"><label for="rubberMovement">Rubber Movement</label><output id="rubberMovementOut" for="rubberMovement">18%</output></div>
+        <input id="rubberMovement" type="range" min="0" max="100" value="18">
+      </div>
+      <div class="range-field">
+        <div class="range-label"><label for="grooveTightness">Groove Tightness</label><output id="grooveTightnessOut" for="grooveTightness">92%</output></div>
+        <input id="grooveTightness" type="range" min="0" max="100" value="92">
+      </div>
+    </div>
+
+    <h3>Motor Safety</h3>
+    <div class="production-chips motor-safety" id="motorSafety" role="group" aria-label="Motor safety options">
+      <button class="toggle-btn active" type="button" data-motor-safety="kickMono" aria-pressed="true">Kick mono</button>
+      <button class="toggle-btn active" type="button" data-motor-safety="subMono" aria-pressed="true">Sub mono below 120 Hz</button>
+      <button class="toggle-btn active" type="button" data-motor-safety="phaseLock" aria-pressed="true">Kick/Bass phase lock</button>
+      <button class="toggle-btn active" type="button" data-motor-safety="bassSidechain" aria-pressed="true">Bass sidechain</button>
+      <button class="toggle-btn active" type="button" data-motor-safety="dryKick" aria-pressed="true">Dry kick path</button>
+      <button class="toggle-btn active" type="button" data-motor-safety="lowEndGuard" aria-pressed="true">Low-end collision guard</button>
+    </div>
+
+    <div class="motor-output-grid">
+      <article class="motor-output">
+        <span>Motor Style Tag</span>
+        <pre id="motorStyleOutput"></pre>
+      </article>
+      <article class="motor-output">
+        <span>Studio 2 Motor Brief</span>
+        <pre id="motorStudioOutput"></pre>
+      </article>
+      <article class="motor-output">
+        <span>Kick / Bass Guard</span>
+        <pre id="motorGuardOutput" role="status" aria-live="polite"></pre>
+      </article>
+    </div>
+  </section>
+
+  <section class="card fx-motion-card" id="fxMotionLab">
+    <div class="panel-head">
+      <div>
+        <h2 class="card-title">10 — Intelligent FX Motion System</h2>
+        <p class="panel-hint">Subgenre-based effects, tension shaping and arrangement-aware motion. FX briefs only; no audio is processed.</p>
+      </div>
+      <span class="fx-badge" id="fxMotionStatus" role="status" aria-live="polite">FX CONTROLLED</span>
+    </div>
+
+    <div class="fx-motion-grid">
+      <div class="field production-field">
+        <label for="fxFamilyLens">FX Family</label>
+        <select id="fxFamilyLens">
+          <option value="Psy FX">Psy FX</option>
+          <option value="Forest FX" selected>Forest FX</option>
+          <option value="Full-On FX">Full-On FX</option>
+          <option value="Transition FX">Transition FX</option>
+          <option value="Psycho FX">Psycho FX</option>
+        </select>
+      </div>
+      <div class="field production-field">
+        <label for="fxSubgenreMode">FX Subgenre Mode</label>
+        <select id="fxSubgenreMode">
+          <option value="psy">Psytrance</option>
+          <option value="forest" selected>Forest Psy</option>
+          <option value="fullon">Full-On</option>
+          <option value="darkpsy">Dark Psy</option>
+          <option value="hitech">Hi-Tech</option>
+          <option value="hybrid">Hybrid / Controlled Chaos</option>
+        </select>
+      </div>
+      <div class="field production-field">
+        <label for="fxTrackPhase">Track Phase</label>
+        <select id="fxTrackPhase">
+          <option value="intro">Intro</option>
+          <option value="build">Build-up</option>
+          <option value="groove" selected>Main Groove</option>
+          <option value="breakdown">Breakdown</option>
+          <option value="predrop">Pre-Drop</option>
+          <option value="drop">Drop</option>
+          <option value="outro">Outro</option>
+        </select>
+      </div>
+      <div class="field production-field">
+        <label for="fxMotionMode">Motion Mode</label>
+        <select id="fxMotionMode">
+          <option value="static">Static</option>
+          <option value="slow">Slow Evolving</option>
+          <option value="organic" selected>Organic Random</option>
+          <option value="rhythmic">Rhythmic Sync</option>
+          <option value="chaotic">Controlled Chaos</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="fx-motion-grid fx-motion-controls">
+      <div class="range-field">
+        <div class="range-label"><label for="fxEnergy">Energy</label><output id="fxEnergyOut" for="fxEnergy">62%</output></div>
+        <input id="fxEnergy" type="range" min="0" max="100" value="62">
+      </div>
+      <div class="range-field">
+        <div class="range-label"><label for="fxTension">Tension</label><output id="fxTensionOut" for="fxTension">56%</output></div>
+        <input id="fxTension" type="range" min="0" max="100" value="56">
+      </div>
+      <div class="range-field">
+        <div class="range-label"><label for="fxDensity">FX Density</label><output id="fxDensityOut" for="fxDensity">42%</output></div>
+        <input id="fxDensity" type="range" min="0" max="100" value="42">
+      </div>
+      <div class="range-field">
+        <div class="range-label"><label for="fxWidth">FX Stereo Width</label><output id="fxWidthOut" for="fxWidth">68%</output></div>
+        <input id="fxWidth" type="range" min="0" max="100" value="68">
+      </div>
+      <div class="range-field">
+        <div class="range-label"><label for="fxChaos">Mutation / Chaos</label><output id="fxChaosOut" for="fxChaos">35%</output></div>
+        <input id="fxChaos" type="range" min="0" max="100" value="35">
+      </div>
+      <div class="range-field">
+        <div class="range-label"><label for="fxSpace">Depth / Space</label><output id="fxSpaceOut" for="fxSpace">58%</output></div>
+        <input id="fxSpace" type="range" min="0" max="100" value="58">
+      </div>
+    </div>
+
+    <h3>Selected FX Families · max 4</h3>
+    <div class="production-chips fx-family-chips" id="fxFamilies" role="group" aria-label="Selected FX families">
+      <button class="toggle-btn active" type="button" aria-pressed="true">Acid Mutation</button>
+      <button class="toggle-btn active" type="button" aria-pressed="true">Organic Creature FX</button>
+      <button class="toggle-btn" type="button" aria-pressed="false">Laser Fracture</button>
+      <button class="toggle-btn" type="button" aria-pressed="false">Reverse Reverb</button>
+      <button class="toggle-btn" type="button" aria-pressed="false">Granular Dust</button>
+      <button class="toggle-btn" type="button" aria-pressed="false">Frequency Shift</button>
+      <button class="toggle-btn" type="button" aria-pressed="false">Noise Riser</button>
+      <button class="toggle-btn" type="button" aria-pressed="false">Sub Drop</button>
+      <button class="toggle-btn" type="button" aria-pressed="false">Stereo Orbit</button>
+      <button class="toggle-btn" type="button" aria-pressed="false">Formant Voice FX</button>
+      <button class="toggle-btn" type="button" aria-pressed="false">Gate Stutter</button>
+      <button class="toggle-btn" type="button" aria-pressed="false">Tape Collapse</button>
+    </div>
+
+    <h3>Motor Protection</h3>
+    <div class="production-chips fx-safety-chips" id="fxSafety" role="group" aria-label="FX motor protection">
+      <button class="toggle-btn active" type="button" data-fx-safety="protectKick" aria-pressed="true">Protect Kick</button>
+      <button class="toggle-btn active" type="button" data-fx-safety="protectSub" aria-pressed="true">Protect Subbass</button>
+      <button class="toggle-btn active" type="button" data-fx-safety="highPassFX" aria-pressed="true">High-pass FX path</button>
+      <button class="toggle-btn active" type="button" data-fx-safety="sidechainFX" aria-pressed="true">Sidechain FX</button>
+      <button class="toggle-btn active" type="button" data-fx-safety="monoGuard" aria-pressed="true">Mono / correlation guard</button>
+      <button class="toggle-btn" type="button" data-fx-safety="dropMute" aria-pressed="false">Mute FX at Drop Start</button>
+    </div>
+
+    <div class="fx-motion-output-grid">
+      <article class="fx-motion-output">
+        <span>Intelligent FX Plan</span>
+        <pre id="fxPlanOutput"></pre>
+      </article>
+      <article class="fx-motion-output">
+        <span>Studio 2 Automation Brief</span>
+        <pre id="fxAutomationOutput"></pre>
+      </article>
+      <article class="fx-motion-output">
+        <span>v6 FX Motion Tag</span>
+        <pre id="fxStyleOutput"></pre>
+      </article>
+    </div>
+  </section>
+
+  <section class="card evidence-card" id="evidenceLab">
+    <div class="panel-head">
+      <div>
+        <h2 class="card-title">11 — Semantic Causal Evidence</h2>
+        <p class="panel-hint">A traceable cause-and-effect chain for production decisions. Confidence reflects matched rules and optional manual review, not automatic audio analysis.</p>
+      </div>
+      <span class="evidence-badge" id="evidenceStatus" role="status" aria-live="polite">EVIDENCE READY</span>
+    </div>
+
+    <div class="evidence-summary">
+      <div class="evidence-stat"><span>Claims</span><strong id="evidenceClaimCount">0</strong></div>
+      <div class="evidence-stat"><span>Conflicts</span><strong id="evidenceConflictCount">0</strong></div>
+      <div class="evidence-stat"><span>Confidence</span><strong id="evidenceConfidence">0%</strong></div>
+    </div>
+
+    <div class="evidence-review">
+      <h3>Manual Audio Review</h3>
+      <p class="production-note">Rate a rendered result after listening. Optionally enter a stereo-correlation reading from an external DAW/analyzer; this app does not analyze audio.</p>
+      <div class="evidence-review-grid">
+        <div class="field production-field">
+          <label for="reviewSubMono">Does the sub remain mono-stable?</label>
+          <select id="reviewSubMono">
+            <option value="" selected>Not rated</option>
+            <option value="1">1 — No</option>
+            <option value="2">2</option>
+            <option value="3">3 — Mixed</option>
+            <option value="4">4</option>
+            <option value="5">5 — Yes</option>
+          </select>
+        </div>
+        <div class="field production-field">
+          <label for="reviewAcidWidth">Is the acid width audible?</label>
+          <select id="reviewAcidWidth">
+            <option value="" selected>Not rated</option>
+            <option value="1">1 — No</option>
+            <option value="2">2</option>
+            <option value="3">3 — Mixed</option>
+            <option value="4">4</option>
+            <option value="5">5 — Yes</option>
+          </select>
+        </div>
+        <div class="field production-field">
+          <label for="reviewDropClearer">Is the drop clearer?</label>
+          <select id="reviewDropClearer">
+            <option value="" selected>Not rated</option>
+            <option value="1">1 — No</option>
+            <option value="2">2</option>
+            <option value="3">3 — Mixed</option>
+            <option value="4">4</option>
+            <option value="5">5 — Yes</option>
+          </select>
+        </div>
+        <div class="field production-field">
+          <label for="stereoCorrelation">DAW stereo correlation (optional)</label>
+          <input id="stereoCorrelation" type="number" min="-1" max="1" step="0.01" placeholder="−1.00 to +1.00">
+        </div>
+      </div>
+      <div class="evidence-actions">
+        <button class="btn btn-secondary btn-sm" id="resetEvidenceReview" type="button">Reset review</button>
+      </div>
+    </div>
+
+    <div class="evidence-output">
+      <span>Evidence Chain</span>
+      <pre id="evidenceOutput" aria-live="polite"></pre>
+    </div>
+    <div class="evidence-actions">
+      <button class="btn btn-secondary" id="copyEvidence" type="button">Copy Evidence Report</button>
+      <button class="btn btn-secondary" id="copyEvidenceJSON" type="button">Copy Evidence JSON</button>
+    </div>
+  </section>
+
+
+
+  <div class="production-guard guard-bar guard-ok" id="productionGuard" role="status" aria-live="polite">✓ Production brief is ready</div>
+
+  <section class="output-box production-output">
+    <div class="output-label">Compact style prompt</div>
+    <div class="output-text" id="styleOutput"></div>
+    <div class="char-counter char-ok" id="productionCharCount">0/1000</div>
+  </section>
+  <section class="output-box production-output">
+    <div class="output-label">Multi-source request</div>
+    <pre id="sourceOutput" class="production-pre"></pre>
+  </section>
+  <section class="output-box production-output">
+    <div class="output-label">Studio 2 brief</div>
+    <pre id="studioOutput" class="production-pre"></pre>
+  </section>
+  <section class="output-box production-output">
+    <div class="output-label">Custom effect plugin brief</div>
+    <pre id="fxOutput" class="production-pre"></pre>
+  </section>
+
+  <div class="btn-row production-actions">
+    <button class="btn btn-primary" id="generate" type="button">⚡ Generate briefs</button>
+    <button class="btn btn-secondary" id="copyV6" type="button">Copy style + source</button>
+    <button class="btn btn-secondary" id="copyStudio" type="button">Copy Studio + FX</button>
+    <button class="btn btn-purple" id="snapshot" type="button">Copy snapshot JSON</button>
+  </div>
+</section>
+
 <nav class="bottom-nav" role="navigation" aria-label="Mobile Navigation">
   <div class="bottom-nav-inner">
     <button class="bnav-btn active" data-tab="core">
@@ -796,6 +1399,10 @@
       <span>🎵</span>
       <span>Modell</span>
     </button>
+    <button class="bnav-btn" data-tab="production">
+      <span class="bnav-icon">🎛️</span>
+      <span class="bnav-label">Studio</span>
+    </button>
   </div>
 </nav>
 
@@ -810,6 +1417,8 @@
 <script src="./matrix.js"></script>
 <script src="./lyric.templates.js"></script>
 <script src="./lyric.engine.js"></script>
+<script src="./src/production.calc.js"></script>
+<script src="./production.js"></script>
 
 </body>
 </html>

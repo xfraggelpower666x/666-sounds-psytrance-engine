@@ -370,14 +370,6 @@ input:checked + .toggle-slider::before {
   border: 1px solid rgba(255,122,0,0.4);
 }
 
-.lyric-image-preview img {
-  width: 100%;
-  height: auto;
-  max-height: 200px;
-  object-fit: cover;
-  display: block;
-}
-
 .lyric-image-preview.has-image {
   display: block;
 }
