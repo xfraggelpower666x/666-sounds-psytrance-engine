@@ -27,6 +27,7 @@
     "html-validate": "^8.0.0",
     "jest": "^29.7.0"
   },
+  "keywords": ["psytrance", "suno", "pwa", "prompt-generator"],
   "jest": {
     "transform": {},
     "testEnvironment": "node",
@@ -44,6 +45,11 @@
         "statements": 90
       }
     }
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "html-validate": "^8.0.0",
+    "jest": "^29.7.0"
   },
   "engines": {
     "node": ">=18.0.0"
