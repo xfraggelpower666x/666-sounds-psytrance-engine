@@ -66,7 +66,21 @@ describe('Production Engine prompt builders', () => {
 
   test('non-wild profiles also preserve the shared Core anchors', () => {
     expect(buildModelDirective('v6', { hardAnchors })).toContain('148 BPM');
+    expect(buildModelDirective('v6-pro', { hardAnchors })).toContain('148 BPM');
     expect(buildModelDirective('v6-mini', { hardAnchors })).toContain('Phrygian tension');
+  });
+
+  test('pro aliases map to the correct v6 family outputs', () => {
+    expect(buildModelDirective('v6-pro', { hardAnchors })).toContain('Controlled, polished execution');
+    expect(buildModelDirective('v6-pro custom', { hardAnchors })).toContain('Controlled, polished execution');
+    expect(buildModelDirective('v6-wild-pro', { weirdness: 90, hardAnchors })).toContain('Mutation intensity: high.');
+  });
+
+  test('Suno web research brief informs the production prompt without breaking the model logic', () => {
+    const brief = require('../src/production.calc').buildSunoWebResearchBrief({ model: 'v6 Pro Custom', mood: 'dark psytrance', bpm: 148 });
+    expect(brief).toContain('MuseLift');
+    expect(brief).toContain('v6 Pro Custom');
+    expect(brief).toContain('mono-safe');
   });
 
   test('style prompt composes shared Core and enforces the output character limit', () => {

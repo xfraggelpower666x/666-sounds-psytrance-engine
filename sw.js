@@ -3,12 +3,10 @@
    Service Worker — PWA Offline Cache
    ============================================================ */
 
-const CACHE_NAME = '666-sounds-v1';
+const CACHE_NAME = 'lyvra-psy-engine-v6';
 
 // Core same-origin assets — install fails if any of these are missing.
 const CORE_ASSETS = [
-const CACHE_NAME = '666-sounds-v5';
-const ASSETS = [
   './',
   './index.html',
   './style.css',
@@ -19,6 +17,9 @@ const ASSETS = [
   './matrix.js',
   './production.js',
   './production.css',
+  './lyvra.facets.css',
+  './lyvra.facets.js',
+  './src/lyvra.facets.calc.js',
   './src/production.calc.js',
   './juno.model.js',
   './lyric.css',

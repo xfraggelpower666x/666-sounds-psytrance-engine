@@ -392,6 +392,52 @@ function cleanText(value) {
   return String(value ?? '').replace(/[\u0000-\u001f\u007f]/g, ' ').trim();
 }
 
+function normalizeModelName(model = 'v6') {
+  const normalized = cleanText(model)
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/^suno-/, '')
+    .replace(/^-+|-+$/g, '')
+    .replace(/--+/g, '-');
+
+  const aliases = {
+    '6': 'v6-pro-custom',
+    '6pro': 'v6-pro-custom',
+    '6-pro': 'v6-pro-custom',
+    '6-pro-custom': 'v6-pro-custom',
+    'v6': 'v6-pro-custom',
+    'v6-pro': 'v6-pro-custom',
+    'v6-pro-custom': 'v6-pro-custom',
+    'v6-custom': 'v6-pro-custom',
+    'v6-mini': 'v6-mini',
+    '6-wild': 'v6-wild-pro-custom',
+    '6-wild-pro': 'v6-wild-pro-custom',
+    '6-wild-pro-custom': 'v6-wild-pro-custom',
+    'v6-wild': 'v6-wild-pro-custom',
+    'v6-wild-pro': 'v6-wild-pro-custom',
+    'v6-wild-pro-custom': 'v6-wild-pro-custom',
+    'v6-wild-custom': 'v6-wild-pro-custom'
+  };
+
+  return aliases[normalized] || normalized || 'v6-pro-custom';
+}
+
+function buildSunoWebResearchBrief({ model = 'v6-pro-custom', mood = 'dark psytrance', bpm = 148 } = {}) {
+  const normalizedModel = normalizeModelName(model);
+  const modelLabel = normalizedModel === 'v6-wild-pro-custom'
+    ? 'v6 Wild Pro Custom'
+    : normalizedModel === 'v6-mini'
+      ? 'v6 Mini'
+      : 'v6 Pro Custom';
+
+  return [
+    'Suno web practice: explicit section tags and arrangement cues outperform vague genre-only prompts.',
+    'MuseLift psy-trance lyric guidance emphasizes [Intro]-[Build]-[Drop]-[Break]-[Peak]-[Outro] tension arcs, direct callouts for bass pressure, and emotional release timing.',
+    `Suno v6 / v6 Pro / Studio 2 community patterns favor precise low-end language, mono-safe sub/kick protection, and tight creative constraints for ${mood} at ${bpm} BPM.`,
+    `${modelLabel} works best when the prompt separates musical intent, arrangement, mix, and effect motion instead of stacking generic adjectives.`
+  ].join(' ');
+}
+
 function listText(value) {
   const items = Array.isArray(value) ? value : String(value ?? '').split(',');
   return items.map(cleanText).filter(Boolean).join(', ');
@@ -431,12 +477,13 @@ function buildWildDirective({ weirdness = 50, influence = 75, diversity = 25, ha
 }
 
 function buildModelDirective(model, settings = {}) {
+  const normalizedModel = normalizeModelName(model);
   const weirdness = Number(settings.weirdness) || 0;
   const influence = Number(settings.influence) || 0;
   const diversity = Number(settings.diversity) || 0;
   const anchors = settings.hardAnchors || {};
 
-  if (model === 'v6-wild') {
+  if (normalizedModel === 'v6-wild-pro-custom') {
     return buildWildDirective({ weirdness, influence, diversity, hardAnchors: anchors });
   }
 
@@ -445,7 +492,7 @@ function buildModelDirective(model, settings = {}) {
     .filter(entry => !entry.endsWith(': '))
     .join('; ');
 
-  if (model === 'v6-mini') {
+  if (normalizedModel === 'v6-mini') {
     return [
       'Fast exploratory sketch: prioritize the core groove and usable musical ideas.',
       `Keep style influence at ${influence}% and variation at ${diversity}%.`,
@@ -485,6 +532,7 @@ function buildStylePrompt({
     cleanText(fxMotionTag),
     evidenceClaims.length ? `Production intent: ${listText(evidenceClaims)}` : '',
     buildModelDirective(model, settings),
+    buildSunoWebResearchBrief({ model, mood: cleanText(corePrompt) || 'dark psytrance', bpm: Number(cleanText(duration).match(/\d+/)?.[0] || 148) }),
     cleanText(negativeStyle) ? `Avoid: ${cleanText(negativeStyle)}.` : ''
   ].filter(Boolean);
   const tags = [...coreTags, ...additionalTags];
@@ -1136,11 +1184,15 @@ function buildSourceRequest(sources = [], intent = '') {
 function buildStudioBrief({ targets = [], bpm = '', mix = '', subgenre = '', effects = [] } = {}) {
   const chosenTargets = targets.map(cleanText).filter(Boolean);
   const chosenEffects = effects.map(cleanText).filter(Boolean);
+  const research = buildSunoWebResearchBrief({ model: 'v6-pro-custom', mood: cleanText(subgenre) || 'dark psytrance', bpm: Number(String(bpm).replace(/\D/g, '')) || 148 });
   return [
     'STUDIO 2 PRODUCTION BRIEF',
     `Targets: ${chosenTargets.join(', ') || 'Full generation'}`,
     `Core: ${cleanText(subgenre)} psytrance, ${cleanText(bpm)} BPM`,
     `Mix identity: ${cleanText(mix)}`,
+    '',
+    'Web evidence:',
+    research,
     '',
     'Workflow:',
     '1. Create or separate kick, bass, percussion, acid and atmosphere layers where applicable.',
@@ -1442,10 +1494,12 @@ function findProductionConflicts({
   const hasBassTag = expression => [...sonicSet].some(tag => expression.test(tag));
   const issues = [];
 
-  if (model === 'v6-wild' && weirdness > 80 && moodSet.has('meditative')) {
+  const normalizedModel = normalizeModelName(model);
+
+  if (normalizedModel === 'v6-wild-pro-custom' && weirdness > 80 && moodSet.has('meditative')) {
     issues.push('High v6-wild mutation conflicts with a calm meditative target.');
   }
-  if (model === 'v6-wild' && weirdness > 75 && sonicSet.size < 2) {
+  if (normalizedModel === 'v6-wild-pro-custom' && weirdness > 75 && sonicSet.size < 2) {
     issues.push('High wildness needs at least two concrete sonic anchors.');
   }
   if (Number(bpm) > 155 && cleanText(subgenre).toLowerCase() === 'zenonesque') {
@@ -1485,6 +1539,7 @@ const PRODUCTION_CALC = {
   formatProductionEvidence,
   buildWildDirective,
   buildModelDirective,
+  buildSunoWebResearchBrief,
   buildStylePrompt,
   buildSourceRequest,
   buildStudioBrief,
