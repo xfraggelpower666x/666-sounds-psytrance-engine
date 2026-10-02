@@ -2,21 +2,22 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://weblyvra.666soundsdesign-broadcaster.com; connect-src 'self'; frame-src https://webradio.666soundsdesign-broadcaster.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="666 SOUNDS">
-  <meta name="theme-color" content="#c92fff">
-  <meta name="description" content="Psychoacoustic Psytrance Prompt Generator for Suno AI Custom Mode">
-  <title>666 SOUNDS — Psytrance Engine</title>
+  <meta name="apple-mobile-web-app-title" content="LYVRA PSY ENGINE">
+  <meta name="theme-color" content="#69E8F5">
+  <meta name="description" content="LYVRA PSY ENGINE — Facetten-Template für Track Design, Suno Studio 2 und Speech Design">
+  <title>LYVRA PSY ENGINE</title>
   <link rel="manifest" href="./manifest.json">
-  <link rel="icon" href="./icon-192.svg" type="image/svg+xml">
+  <link rel="icon" href="./lyvra-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./mobile.css">
   <link rel="stylesheet" href="./lyric.css">
   <link rel="stylesheet" href="./juno.model.css">
   <link rel="stylesheet" href="./production.css">
+  <link rel="stylesheet" href="./lyvra.facets.css">
 </head>
 <body>
 
@@ -24,9 +25,12 @@
      HEADER
      ============================================================ -->
 <header class="site-header">
-  <div>
-    <a class="logo" href="#">666 <span>SOUNDS</span></a>
-    <div class="header-sub">PSYTRANCE ENGINE v2.0 · SUNO CUSTOM MODE</div>
+  <div class="brand-block">
+    <img class="brand-mark" src="https://weblyvra.666soundsdesign-broadcaster.com/assets/brand-chrome-emblem.webp" alt="LYVRA Chrome-Emblem">
+    <div class="brand-copy">
+      <a class="logo" href="#">LYVRA <span>· PSY ENGINE</span></a>
+      <div class="header-sub">Living Yielding Vibration and Resonance Architecture</div>
+    </div>
   </div>
   <nav class="tab-nav" role="tablist">
     <button type="button" class="tab-btn active" data-tab="core"    role="tab">⚡ Core</button>
@@ -38,6 +42,7 @@
     <button type="button" class="tab-btn"        data-tab="audit"   role="tab">📊 Audit</button>
     <button type="button" class="tab-btn"        data-tab="orch"    role="tab">🎼 Orch</button>
     <button type="button" class="tab-btn"        data-tab="backup"  role="tab">💾 Backup</button>
+    <button type="button" class="tab-btn" id="facets-tab" data-tab="facets" role="tab">🪻 LYVRA Facets</button>
   </nav>
 </header>
 
@@ -99,7 +104,7 @@
 
   <!-- Output -->
   <div class="output-box">
-    <div class="output-label">⚡ JUNO STYLE TAG — 1000 CHAR</div>
+    <div class="output-label">⚡ SUNO STYLE FIELD — 1000 CHAR</div>
     <div class="output-text" id="prompt-output">—</div>
     <div class="char-counter char-ok" id="char-count">0/1000</div>
   </div>
@@ -146,15 +151,15 @@
 
   <!-- ── Mode Selector ──────────────────────────────────────── -->
   <div class="lyric-mode-selector" role="tablist" aria-label="Lyrik Modus">
-    <button class="lyric-mode-btn active" data-mode="manual" role="tab" aria-selected="true">
+    <button type="button" class="lyric-mode-btn active" data-mode="manual" role="tab" aria-selected="true">
       <span class="mode-icon">✍️</span>
       <span class="mode-label">Manual</span>
     </button>
-    <button class="lyric-mode-btn" data-mode="ai" role="tab" aria-selected="false">
+    <button type="button" class="lyric-mode-btn" data-mode="ai" role="tab" aria-selected="false">
       <span class="mode-icon">🤖</span>
       <span class="mode-label">KI-Gen</span>
     </button>
-    <button class="lyric-mode-btn" data-mode="image" role="tab" aria-selected="false">
+    <button type="button" class="lyric-mode-btn" data-mode="image" role="tab" aria-selected="false">
       <span class="mode-icon">🖼️</span>
       <span class="mode-label">Bild</span>
     </button>
@@ -173,7 +178,7 @@
       <button type="button" class="btn btn-green" id="btn-copy-lyric">📋 Copy Lyrics</button>
     </div>
 
-    <button class="lyric-build-prompt-btn" id="lyric-image-build-btn" style="display:none">⚡ Extended Prompt aufbauen</button>
+    <button type="button" class="lyric-build-prompt-btn" id="lyric-image-build-btn" style="display:none">⚡ Extended Prompt aufbauen</button>
   </div>
 
   <!-- ════════════════════════════════════════════════════════
@@ -186,14 +191,12 @@
     </div>
     <textarea class="extended-prompt-textarea" id="extended-prompt-text" rows="4" readonly></textarea>
     <div class="extended-prompt-footer">
-      <button class="extended-copy-btn" id="extended-copy-btn">📋 Copy Style Tag</button>
-      <button class="extended-inject-btn" id="extended-inject-btn">→ In Matrix injizieren</button>
+      <button type="button" class="extended-copy-btn" id="extended-copy-btn">📋 Copy Style Tag</button>
+      <button type="button" class="extended-inject-btn" id="extended-inject-btn">→ In Matrix injizieren</button>
     </div>
   </div>
 
 </div><!-- /lyric-panel -->
-</section>
-
 </section>
 
 <!-- ============================================================
@@ -481,14 +484,14 @@
         <li><span>Noch kein Audit gestartet</span><span class="text-muted">—</span></li>
       </ul>
       <div class="btn-row">
-        <button class="btn btn-primary" id="btn-run-audit-panel">▶ Audit starten</button>
+        <button type="button" class="btn btn-primary" id="btn-run-audit-panel">▶ Audit starten</button>
       </div>
     </div>
     <div class="card">
       <div class="card-title"><span class="icon">ℹ️</span> Suno Tips</div>
       <ul class="audit-items">
         <li><span>Suno versteht explizite Bass-Beschreibungen besser als Genre-Labels</span><span class="audit-warn">⚠</span></li>
-        <li><span>"distorted acid bassline with sidechain" > "psytrance bass"</span><span class="audit-pass">✓</span></li>
+        <li><span>"distorted acid bassline with sidechain" &gt; "psytrance bass"</span><span class="audit-pass">✓</span></li>
         <li><span>Max 200 Zeichen im Style-Feld (Custom Mode)</span><span class="audit-pass">✓</span></li>
         <li><span>Comma-separated Tags funktionieren am zuverlässigsten</span><span class="audit-pass">✓</span></li>
         <li><span>BPM-Angabe hilft Suno beim Tempo</span><span class="audit-pass">✓</span></li>
@@ -530,8 +533,8 @@
         <span class="text-muted font-mono" style="font-size:0.62rem">Keine Snapshots</span>
       </div>
       <div class="btn-row">
-        <button class="btn btn-secondary btn-sm" id="btn-snapshot-panel">📸 Snapshot</button>
-        <button class="btn btn-secondary btn-sm" id="btn-export-json">📤 Export JSON</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="btn-snapshot-panel">📸 Snapshot</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="btn-export-json">📤 Export JSON</button>
         <label class="btn btn-secondary btn-sm" style="cursor:pointer">
           📥 Import JSON
           <input type="file" id="import-input" accept=".json" style="display:none">
@@ -558,13 +561,279 @@
   </div>
 </section>
 
+<!-- ============================================================
+     PANEL: LYVRA FACET BLUEPRINT TEMPLATE
+     ============================================================ -->
+<section id="panel-facets" class="tab-panel" role="tabpanel" aria-labelledby="facets-tab">
+  <div class="facet-workbench">
+    <header class="facet-intro">
+      <div>
+        <p class="facet-kicker">LYVRA · Living Yielding Vibration and Resonance Architecture</p>
+        <h1>LYVRA PSY ENGINE</h1>
+        <p>Ein lokales, regelbasiertes Facetten-Template. Es greift nicht auf LYVRAs natives Repository oder Runtime zu und erzeugt keine Suno-Audios.</p>
+      </div>
+      <span class="facet-status">TEMPLATE · NATIVE INTELLIGENCE NICHT VERBUNDEN</span>
+      <div class="facet-brand-art">
+        <img src="https://weblyvra.666soundsdesign-broadcaster.com/assets/lyvra-avatar-wordmark.webp" alt="LYVRA Neon-Chrome-Wortmarke" loading="lazy">
+        <img src="https://weblyvra.666soundsdesign-broadcaster.com/assets/lyvra-avatar-front.webp" alt="LYVRA im weißen Cyber-Anzug mit cyanfarbenem Herzlicht" loading="lazy">
+      </div>
+    </header>
+
+    <nav class="facet-switch" role="tablist" aria-label="LYVRA-Facetten">
+      <button type="button" class="facet-switch-btn active" role="tab" aria-selected="true" aria-controls="facet-track" data-facet-view="track">Track Design</button>
+      <button type="button" class="facet-switch-btn" role="tab" aria-selected="false" aria-controls="facet-studio" data-facet-view="studio2">Suno Studio 2</button>
+      <button type="button" class="facet-switch-btn" role="tab" aria-selected="false" aria-controls="facet-speech" data-facet-view="speech">Speech Design <span class="dev-mark">DEV</span></button>
+    </nav>
+
+    <section id="facet-track" class="facet-view active" role="tabpanel" data-facet-panel="track">
+      <div class="facet-section-head">
+        <div><p class="facet-kicker">01 / KLANGARCHITEKTUR</p><h2>Track Design</h2></div>
+        <button class="btn btn-secondary btn-sm" type="button" id="facet-sync-core">Core-Prompt übernehmen</button>
+      </div>
+      <p class="facet-note">Ein Musikintent. Motor als wichtigste kinetische Referenz, nicht als alleinige Kompositionsautorität. Creator-Kontrollen bleiben getrennt von Suno-Textfeldern.</p>
+
+      <div class="facet-grid">
+        <fieldset class="facet-fieldset">
+          <legend>Motor · Low · Mid · High</legend>
+          <label>Genre / Sound-DNA<input type="text" data-track-field="genreDNA" placeholder="Nutze das aktuelle Core-Genre"></label>
+          <label>Tonart / Key (optional, von der Skala getrennt)<input type="text" data-track-field="key" placeholder="Nur falls konkret festgelegt"></label>
+          <label>Motor-DNA<input type="text" data-track-field="motorDNA" value="Dry short 4x4 kick, straight rolling 16th-note mono psybass, pressure persistence and forward propulsion"></label>
+          <label>Low · physische Autorität<input type="text" data-track-field="low" value="Dry kick, straight rolling mono bass, mono sub and stable grid"></label>
+          <label>Mid · strukturierte Transformation<input type="text" data-track-field="mid" value="Partly motor-bound, partly autonomous acid/FM dialogue, psy percussion and pattern mutation"></label>
+          <p class="facet-note">Die 50/50-Regel ist eine Heuristik für Motorbindung und autonome Mutation, keine Prozentmischung.</p>
+          <label>High · Wahrnehmungsfreiheit<input type="text" data-track-field="high" value="Orbital spectral space, glitch and controlled freakout; never replace the motor"></label>
+          <label>Pressure / Bewegung<textarea rows="2" data-track-field="pressure">Sustain forward drive, shape attack and release, and make drops and transitions serve the motor.</textarea></label>
+          <label>Psychoakustische Dramaturgie<textarea rows="2" data-track-field="psychoacousticDramaturgy">Create tension, contrast, release and return through controlled spectral and spatial motion.</textarea></label>
+        </fieldset>
+
+        <fieldset class="facet-fieldset">
+          <legend>Lyrics · Ursache und Bedeutung</legend>
+          <label>Target Listener<input type="text" data-track-field="targetListener" value="A listener moving through a dark, focused dancefloor journey"></label>
+          <label>Scene / Set Context<input type="text" data-track-field="sceneContext" value="Night-time club set with room for tension and release"></label>
+          <label>Emotional Temperature<input type="text" data-track-field="emotionalTemperature" value="Restless anticipation transforming into grounded belonging"></label>
+          <label>Global Meaning<input type="text" data-track-field="globalMeaning" value="A signal becomes a shared point of orientation"></label>
+          <label>Starting State<input type="text" data-track-field="startingState" value="Isolation and uncertainty"></label>
+          <label>Story Cause<input type="text" data-track-field="storyCause" value="Pressure and uncertainty lead the listener to seek a stable signal"></label>
+          <label>Reaction / Decision<input type="text" data-track-field="reactionDecision" value="Choose to follow the signal rather than escape the pressure"></label>
+          <label>Relationship Shift<input type="text" data-track-field="relationshipShift" value="The signal changes from distant warning into shared orientation"></label>
+          <label>Consequence<input type="text" data-track-field="consequence" value="The listener becomes part of the pulse that once guided them"></label>
+          <label>Voice Role<input type="text" data-track-field="voiceRole" value="A restrained call answered by the instrumental arrangement"></label>
+          <label>Breath &amp; Phrasing<input type="text" data-track-field="breathAndPhrasing" value="Leave breath between short phrases; let the kick and bass answer"></label>
+          <label>Syllabic Rhythm<input type="text" data-track-field="syllabicRhythm" value="Short, clear phrases with space for the motor and instrumental replies"></label>
+          <label>Hook / Mantra<input type="text" data-track-field="hookMantra" value="Follow the signal"></label>
+          <label>Hook / Mantra Function Change<input type="text" data-track-field="mantraFunction" value="Return as a recognition anchor, changing from invitation to belonging"></label>
+          <label>Call &amp; Response<input type="text" data-track-field="callResponse" value="Voice calls; acid/FM midrange answers; kick and bass remain the ground"></label>
+          <label>Renderer-Format<select data-track-field="lyricFormat"><option>Use square brackets for section labels and parentheses for performance directions</option><option>Section labels only; no performance directions</option><option>Call and response in separate labeled lines</option></select></label>
+        </fieldset>
+
+        <fieldset class="facet-fieldset">
+          <legend>Meaning-bound Emoji Intelligence</legend>
+          <label>Bedeutung (leer lassen = begründet auslassen)<input type="text" data-track-field="emojiMeaning" placeholder="Keine feste Anzahl oder Gewichtung"></label>
+          <label>Platzierung<input type="text" data-track-field="emojiPlacement" value="Only at a field or section where it clarifies intent"></label>
+          <label>Qualitative Intensität<input type="text" data-track-field="emojiIntensity" value="Subtle and sparse when semantically justified"></label>
+          <label>Musikalische Funktion<input type="text" data-track-field="emojiFunction" value="Reinforce meaning; do not imply an acoustic effect"></label>
+          <p class="facet-note">Reihenfolge: Bedeutung klären → Intensität bestimmen → für den Renderer übersetzen. Keine feste Anzahl, Prozentgewichtung oder unterstellte Audio-Wirkung.</p>
+        </fieldset>
+
+        <fieldset class="facet-fieldset">
+          <legend>Creator Controls · Renderer Choice</legend>
+          <label>Renderer / Modell<select data-track-field="model"><option value="" selected>Kontextabhängig · nicht vorausgewählt</option><option value="v6">v6</option><option value="v6-wild">v6-wild</option><option value="v6-mini">v6-mini</option><option value="V6 Pro">V6 Pro · Account-Anzeige</option><option value="V6 Wild Pro">V6 Wild Pro · Account-Anzeige</option><option value="V6 Mini">V6 Mini · Account-Anzeige</option><option value="LYVRA STYLE">LYVRA STYLE · Custom Model</option><option value="666PoWeRSoUnD">666PoWeRSoUnD · Custom Model</option><option value="666SD_PsyTrance">666SD_PsyTrance · Custom Model</option></select></label>
+          <label>Major Option<select data-track-field="majorOption"><option value="" selected>Nicht gesetzt · im aktuellen UI wählen</option><option>Max</option><option>Instrumental</option><option>Personalization</option><option>Voice</option></select></label>
+          <label>Weirdness<input type="number" min="0" max="100" placeholder="nicht gesetzt" data-track-field="weirdness"></label>
+          <label>Variety<input type="number" min="0" max="100" placeholder="nicht gesetzt" data-track-field="variety"></label>
+          <label>Style Influence<input type="number" min="0" max="100" placeholder="nicht gesetzt" data-track-field="influence"></label>
+          <label>Voice<input type="text" placeholder="aktueller UI-Wert" data-track-field="voice"></label>
+          <label class="facet-inline-check"><input type="checkbox" data-track-field="instrumental">Instrumental</label>
+          <label>Audio Influence<input type="number" min="0" max="100" placeholder="nicht gesetzt" data-track-field="audioInfluence"></label>
+          <label>Audio Conditioning<select data-track-field="audioConditioning"><option selected>None</option><option>Reference audio</option><option>Continue selected audio</option></select></label>
+          <p class="facet-note">Diese Werte bleiben Creator Controls und sind keine fünfte Suno-Textbox. Keine Zahlen werden als feste LYVRA-Presets vorausgewählt.</p>
+        </fieldset>
+      </div>
+
+      <div class="facet-output-grid">
+        <label>Title <small id="track-count-title">0/80 Zeichen</small><input type="text" data-renderer-field="title" maxlength="80" value="Signal / Pressure / Return"></label>
+        <label>Extended <small id="track-count-extended">0/1000 Zeichen</small><textarea data-renderer-field="extended" maxlength="1000" rows="3"></textarea></label>
+        <label>Style <small id="track-count-style">0/1000 Zeichen</small><textarea data-renderer-field="style" maxlength="1000" rows="3"></textarea></label>
+        <label>Lyrics <small id="track-count-lyrics">0/5000 Zeichen</small><textarea data-renderer-field="lyrics" maxlength="5000" rows="7"></textarea></label>
+      </div>
+      <div class="facet-actions" role="group" aria-label="Suno-Feld kopieren">
+        <button class="btn btn-secondary btn-sm" type="button" data-copy-renderer="title">Title kopieren</button>
+        <button class="btn btn-secondary btn-sm" type="button" data-copy-renderer="extended">Extended kopieren</button>
+        <button class="btn btn-secondary btn-sm" type="button" data-copy-renderer="style">Style kopieren</button>
+        <button class="btn btn-secondary btn-sm" type="button" data-copy-renderer="lyrics">Lyrics kopieren</button>
+      </div>
+      <section class="facet-result"><h3>Track Design Brief</h3><pre id="track-design-output" aria-live="polite"></pre></section>
+      <div class="facet-research-actions" role="group" aria-label="Track Design Voraudit und Renderer Search">
+        <button type="button" class="btn btn-secondary btn-sm" data-research-facet="track" data-research-phase="preaudit" data-research-source="official">Track · Voraudit · Offiziell ↗</button>
+        <button type="button" class="btn btn-secondary btn-sm" data-research-facet="track" data-research-phase="preaudit" data-research-source="community">Track · Voraudit · Community ↗</button>
+        <button type="button" class="btn btn-secondary btn-sm" data-research-facet="track" data-research-phase="renderer" data-research-source="official">Track · Renderer · Offiziell ↗</button>
+        <button type="button" class="btn btn-secondary btn-sm" data-research-facet="track" data-research-phase="renderer" data-research-source="community">Track · Renderer · Community ↗</button>
+      </div>
+    </section>
+
+    <section id="facet-studio" class="facet-view" role="tabpanel" data-facet-panel="studio2" hidden>
+      <div class="facet-section-head">
+        <div><p class="facet-kicker">02 / OPERATIONSKONTROLLE</p><h2>Suno Studio 2</h2></div>
+        <span class="facet-status">10 MIN · EXTEND + ARRANGEMENT</span>
+      </div>
+      <p class="facet-warning">Laut Blueprint sind v6-Einzelgenerationen auf bis zu 8 Minuten ausgelegt. Zehn Minuten benötigen Seed unter 8 Minuten, Extend und Studio-Arrangement. Dieser Plan rendert oder analysiert kein Audio.</p>
+
+      <div class="facet-grid facet-control-families">
+        <fieldset class="facet-fieldset">
+          <legend>A · Generation Controls</legend>
+          <label>A0 Intent<input type="text" data-studio-generation="intent" value="Motor-first psytrance journey with evolving pressure"></label>
+          <label>A1 Renderer Model<select data-studio-generation="rendererModel"><option value="" selected>Kontextabhängig · nicht vorausgewählt</option><option>v6</option><option>v6-wild</option><option>v6-mini</option><option>LYVRA STYLE · Custom</option><option>666PoWeRSoUnD · Custom</option><option>666SD_PsyTrance · Custom</option></select></label>
+          <label>A2 Major Option<select data-studio-generation="majorOption"><option value="" selected>Nicht gesetzt · im aktuellen UI wählen</option><option>Max</option><option>Instrumental</option><option>Personalization</option><option>Voice</option></select></label>
+          <label>A2 Voice<input type="text" placeholder="aktueller UI-Wert" data-studio-generation="voice"></label>
+          <label>A2 Instrumental<input type="checkbox" data-studio-generation="instrumental"></label>
+          <label>A3 Variety<input type="number" min="0" max="100" placeholder="nicht gesetzt" data-studio-generation="variety"></label>
+          <label>A3 Weirdness<input type="number" min="0" max="100" placeholder="nicht gesetzt" data-studio-generation="weirdness"></label>
+          <label>A3 Style Influence<input type="number" min="0" max="100" placeholder="nicht gesetzt" data-studio-generation="influence"></label>
+          <label>A4 Audio Influence<input type="number" min="0" max="100" placeholder="nicht gesetzt" data-studio-generation="audioInfluence"></label>
+          <label>A4 Audio Conditioning<select data-studio-generation="conditioning"><option>None</option><option>Reference seed</option><option>Selected continuation</option></select></label>
+          <label>A5 Seed Duration<select data-studio-generation="duration"><option value="" selected>Check current UI</option><option>6 minutes</option><option>7 minutes</option><option>Under 8 minutes</option></select></label>
+          <p class="facet-note">A6 · Voraudit: nutze die getrennten Suchaktionen unter dem Plan.</p>
+        </fieldset>
+
+        <fieldset class="facet-fieldset">
+          <legend>B · Studio Operation Controls</legend>
+          <label>B0 Task<select data-studio-operation="task"><option value="" selected>Nicht gesetzt · Operation auswählen</option><option>Preserve</option><option>Repair</option><option>New Layer</option><option>Transition</option><option>Mix</option><option>Automation</option><option>FX</option><option>Extend + arrange</option><option>Replace selected section</option><option>Separate stems</option><option>Generate MIDI</option></select></label>
+          <label>B1 Preserve<input type="text" data-studio-operation="preserve" value="Protect motor identity, excellent sections and established intent"></label>
+          <label>B1 Mutate<input type="text" data-studio-operation="mutate" value="Mutate selected arrangement surfaces, transitions and textures"></label>
+          <label>B2 Surface<select data-studio-operation="surface"><option value="" selected>Aktuelle Studio-Oberfläche wählen</option><option>Chat</option><option>Timeline</option><option>FX</option><option>Stem</option><option>Style</option><option>Text</option><option>Custom Plugin</option></select></label>
+          <label>B3 Edit Scope<select data-studio-operation="editScope"><option value="" selected>Scope auswählen</option><option>Whole track</option><option>Region</option><option>Stem</option><option>Audio</option><option>MIDI</option><option>Automation</option></select></label>
+          <label>B4 Context-specific controls<input type="text" data-studio-operation="controls" placeholder="Nur Regler der gewählten Studio-Operation"></label>
+          <label>B4 Transition<input type="text" data-studio-operation="transition" value="Phrase-aware transition; preserve downbeat and motor continuity"></label>
+          <label>B5 Specialist Operation<select data-studio-operation="specialistOperation"><option>Phrase-aware transition and stem-aware balance</option><option>Protect motor and excellent sections</option><option>Controlled DJ outro with no re-entry</option></select></label>
+          <label>B6 FX<input type="text" data-studio-operation="fx" value="Controlled FX automation; avoid masking kick, sub or the next section"></label>
+          <div class="facet-checks" role="group" aria-label="Stems to preserve">
+            <label><input type="checkbox" value="Kick" data-studio-stem checked>Kick</label><label><input type="checkbox" value="Bass" data-studio-stem checked>Bass</label><label><input type="checkbox" value="Drums" data-studio-stem checked>Drums</label><label><input type="checkbox" value="Leads" data-studio-stem checked>Leads</label><label><input type="checkbox" value="Pads" data-studio-stem checked>Pads</label><label><input type="checkbox" value="FX" data-studio-stem checked>FX</label>
+          </div>
+          <label>B6 Execute &amp; Observe<textarea rows="2" data-studio-operation="observation" placeholder="Manuelle Aktion und Hörbeobachtung"></textarea></label>
+          <label>B7 Evidence Status<select data-studio-operation="evidenceStatus"><option selected>UNVERIFIED</option><option>PARTIAL</option><option>PASS · manual listening evidence only</option><option>FAIL</option></select></label>
+        </fieldset>
+      </div>
+
+      <div class="facet-timeline-wrap"><h3>Vorgeschlagener 10-Minuten-Verlauf · 12 Abschnitte</h3><ol id="studio-timeline" class="facet-timeline"></ol></div>
+      <section class="facet-result"><h3>Studio 2 Plan · keine Ausführung</h3><pre id="studio-plan-output" aria-live="polite"></pre></section>
+      <div class="facet-research-actions" role="group" aria-label="Suno Studio 2 Voraudit und Renderer Search">
+        <button type="button" class="btn btn-secondary btn-sm" data-research-facet="studio2" data-research-phase="preaudit" data-research-source="official">Studio 2 · Voraudit · Offiziell ↗</button>
+        <button type="button" class="btn btn-secondary btn-sm" data-research-facet="studio2" data-research-phase="preaudit" data-research-source="community">Studio 2 · Voraudit · Community ↗</button>
+        <button type="button" class="btn btn-secondary btn-sm" data-research-facet="studio2" data-research-phase="renderer" data-research-source="official">Studio 2 · Renderer · Offiziell ↗</button>
+        <button type="button" class="btn btn-secondary btn-sm" data-research-facet="studio2" data-research-phase="renderer" data-research-source="community">Studio 2 · Renderer · Community ↗</button>
+      </div>
+    </section>
+
+    <section id="facet-speech" class="facet-view" role="tabpanel" data-facet-panel="speech" hidden>
+      <div class="facet-section-head">
+        <div><p class="facet-kicker">03 / STIMME UND PROSODIE</p><h2>Speech Design</h2></div>
+        <span class="dev-mark dev-mark-large">DEV · NICHT PRODUKTIV FREIGEGEBEN</span>
+      </div>
+      <p class="facet-warning">Blueprint-Status: Entwicklungskandidat (Stand 01.10.2026), keine freigegebene Produktionsfacette. Phonemtests bleiben Kandidaten, bis alle erforderlichen Hörbelege und Creator-Freigabe vorliegen.</p>
+      <div class="facet-mode" role="group" aria-label="Speech Design Modus">
+        <button type="button" class="facet-mode-btn active" aria-pressed="true" data-speech-mode="simple">Einfach</button>
+        <button type="button" class="facet-mode-btn" aria-pressed="false" data-speech-mode="advanced">Erweitert</button>
+      </div>
+      <div class="facet-grid">
+        <fieldset class="facet-fieldset">
+          <legend>Speech Controls</legend>
+          <label class="speech-simple">Freitext<textarea rows="5" data-speech-field="freeform" placeholder="Beschreibe die gewünschte Sprache"></textarea></label>
+          <div class="speech-advanced" hidden>
+            <label>Skript<textarea rows="5" data-speech-field="script" placeholder="Wortgetreues Quellskript"></textarea></label>
+            <label>Tonfall<input type="text" data-speech-field="tone" value="Warm, clear, emotionally grounded"></label>
+            <label>Stimmgeschlecht<select data-speech-field="voiceSex"><option value="" selected>Im aktuellen UI wählen</option><option>Weiblich</option><option>Männlich</option></select></label>
+            <label>Hintergrundmusik<select data-speech-field="backgroundMusic"><option value="" selected>Im aktuellen UI wählen</option><option>An</option><option>Aus</option></select></label>
+            <label>Vielfalt · beobachteter UI-Wert<input type="text" data-speech-field="variety" value="Normal"></label>
+            <label>Prosodie<textarea rows="2" data-speech-field="prosody">Natural stress, phrasing and pauses</textarea></label>
+            <label>Worttreue<textarea rows="2" data-speech-field="wordFidelity">Preserve the script literally; do not paraphrase</textarea></label>
+            <h3>Kontrollierter Phonemtest · Hörbeleg erforderlich</h3>
+            <label>Source Script Version<input type="text" data-speech-field="sourceScriptVersion"></label>
+            <label>Audio Reference SHA-256<input type="text" data-speech-field="audioReferenceSha"></label>
+            <label>Specific Word<input type="text" data-speech-field="specificWord"></label>
+            <label>Actual Timecode<input type="text" data-speech-field="actualTimecode" placeholder="mm:ss.mmm"></label>
+            <label>Original Pronunciation<input type="text" data-speech-field="originalPronunciation"></label>
+            <label>Candidate Pronunciation<input type="text" data-speech-field="candidatePronunciation"></label>
+            <label>Heard Observation<textarea rows="2" data-speech-field="heardObservation"></textarea></label>
+            <label class="facet-inline-check"><input type="checkbox" data-speech-field="creatorApproval">Creator-Freigabe erteilt</label>
+            <p id="speech-review-status" class="facet-note" role="status" aria-live="polite"></p>
+          </div>
+          <p class="facet-note">Gesprochene Wörter zuerst. Wörtliche Emojis im Skript sind standardmäßig deaktiviert.</p>
+        </fieldset>
+        <section class="facet-result"><h3>Speech Brief · Vorlage, keine Sprachgenerierung</h3><pre id="speech-design-output" aria-live="polite"></pre></section>
+      </div>
+      <div class="facet-research-actions" role="group" aria-label="Speech Design Voraudit und Renderer Search">
+        <button type="button" class="btn btn-secondary btn-sm" data-research-facet="speech" data-research-phase="preaudit" data-research-source="official">Speech · Voraudit · Offiziell ↗</button>
+        <button type="button" class="btn btn-secondary btn-sm" data-research-facet="speech" data-research-phase="preaudit" data-research-source="community">Speech · Voraudit · Community ↗</button>
+        <button type="button" class="btn btn-secondary btn-sm" data-research-facet="speech" data-research-phase="renderer" data-research-source="official">Speech · Renderer · Offiziell ↗</button>
+        <button type="button" class="btn btn-secondary btn-sm" data-research-facet="speech" data-research-phase="renderer" data-research-source="community">Speech · Renderer · Community ↗</button>
+      </div>
+    </section>
+
+    <section class="facet-evidence">
+      <div class="facet-section-head"><div><p class="facet-kicker">MANUELLE QUELLENPRÜFUNG</p><h2>Evidenzprotokoll</h2></div><span class="facet-status">LOKAL IM BROWSER</span></div>
+      <p class="facet-note">Suchbuttons öffnen öffentliche Suchseiten. Kein automatisches Readback. Speichere Quelle, Datum, Beobachtung und Grenzen nach eigener Prüfung.</p>
+      <div class="facet-evidence-grid">
+        <label>Facet<select id="evidence-facet"><option value="track">Track Design</option><option value="studio2">Suno Studio 2</option><option value="speech">Speech Design</option></select></label>
+        <label>Phase<select id="evidence-phase"><option value="preaudit">preaudit</option><option value="renderer">renderer</option></select></label>
+        <label>Question<input id="evidence-question" type="text"></label>
+        <label>Model<input id="evidence-model" type="text" value="v6 Pro Custom"></label>
+        <label>Studio Version / Mode<input id="evidence-studio-mode" type="text" placeholder="z. B. sichtbarer Studio-Modus"></label>
+        <label>Source Class<select id="evidence-source-class"><option value="current_official">Current official</option><option value="current_help_or_release">Current help / release</option><option value="dated_community">Dated community</option><option value="own_verified_output">Own verified output</option><option value="specialist_audio_domain">Specialist audio domain</option></select></label>
+        <label>URL<input id="evidence-url" type="url" placeholder="https://"></label>
+        <label>Source Date<input id="evidence-source-date" type="date"></label>
+        <label>Claim<input id="evidence-claim" type="text"></label>
+        <label>Observation<textarea id="evidence-observation" rows="2"></textarea></label>
+        <label>Interpretation<textarea id="evidence-interpretation" rows="2"></textarea></label>
+        <label>Contradictions<textarea id="evidence-contradictions" rows="2"></textarea></label>
+        <label>Confidence<select id="evidence-confidence"><option>unrated</option><option>low</option><option>medium</option><option>high</option></select></label>
+        <label>Generalization Limit<textarea id="evidence-generalization" rows="2"></textarea></label>
+        <label>Test Candidate<textarea id="evidence-test-candidate" rows="2"></textarea></label>
+        <label>Status<select id="evidence-status"><option value="manual_review">manual_review</option><option value="candidate">candidate</option><option value="verified">verified</option><option value="contradicted">contradicted</option></select></label>
+      </div>
+      <div class="facet-actions">
+        <button type="button" class="btn btn-primary btn-sm" id="evidence-save">Eintrag speichern</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="evidence-export-json">JSON herunterladen</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="evidence-export-md">Markdown herunterladen</button>
+      </div>
+      <div id="evidence-log" class="facet-evidence-log" aria-live="polite"></div>
+    </section>
+
+    <section class="facet-handoff">
+      <h2>Validation &amp; Handoff</h2>
+      <ul>
+        <li>Lokales, regelbasiertes HTML-Template; kein nativer LYVRA-Runtime-Zugriff.</li>
+        <li>Keine GitHub-Schreibrechte, Suno-Generierung, automatische Web-Recherche oder Audioanalyse.</li>
+        <li>Speech Design ist ein Entwicklungsentwurf, keine freigegebene Produktionsfunktion.</li>
+        <li>Renderer-Ausgaben sind Vorlagen; Prüfung und Audio-Validierung erfolgen extern und manuell.</li>
+      </ul>
+      <div class="facet-source-links">
+        <a href="https://help.suno.com/en/articles/13924929" target="_blank" rel="noopener noreferrer">Suno Help · Duration ↗</a>
+        <a href="https://help.suno.com/en/articles/2409601" target="_blank" rel="noopener noreferrer">Suno Help · Extend ↗</a>
+        <a href="https://suno.com/release-notes/studio-2" target="_blank" rel="noopener noreferrer">Suno Studio 2 ↗</a>
+        <a href="https://www.suno.com/blog/introducing-speech-beta" target="_blank" rel="noopener noreferrer">Suno Speech Beta ↗</a>
+        <a href="https://github.com/xfraggelpower666x/LYVRA-Living-Yielding-Vibration-and-Resonance-Architecture/pull/23" target="_blank" rel="noopener noreferrer">Speech Development PR #23 ↗</a>
+        <a href="https://chatgpt.com/g/g-6abe79b4637481919e42d6085ccdbac3-l-y-v-r-a" target="_blank" rel="noopener noreferrer">LYVRA Custom GPT ↗</a>
+      </div>
+      <label class="facet-project-sha">Native Source SHA-256 · manuell geprüft<input id="native-source-sha" type="text" autocomplete="off" placeholder="Nicht automatisch abgerufen"></label>
+      <p class="facet-note">Das angegebene Native-Repository und der Branch sind keine automatische Authority-Prüfung. Speichere einen SHA nur nach eigenständigem Readback.</p>
+    </section>
+
+    <section class="facet-handoff" aria-label="Projekt-Export">
+      <h2>Arbeitsstand sichern</h2>
+      <p class="facet-note">Export enthält Eingaben, Renderer-Vorlagen, Controls, Studio-Plan, Speech-DEV-Daten und manuelle Evidenz. Keine Tokens oder Audiodateien.</p>
+      <div class="facet-actions">
+        <button type="button" class="btn btn-secondary" id="facet-project-export-json">Projekt-JSON herunterladen</button>
+        <button type="button" class="btn btn-secondary" id="facet-project-export-md">Prompt-Paket als Markdown herunterladen</button>
+      </div>
+    </section>
+  </div>
+</section>
+
 </main>
 
 <!-- ============================================================
      BOTTOM NAV (Mobile)
      ============================================================ -->
-<nav class="bottom-nav" aria-label="Mobile Navigation">
-
 <!-- ============================================================
      PANEL: JUNO MODELL SWITCHER
      ============================================================ -->
@@ -595,11 +864,11 @@
       <h2 class="card-title"><span class="icon">🎵</span> Production profile</h2>
       <p class="production-note">These profiles shape the written brief only; this app does not connect to a generation API.</p>
       <div class="production-models" id="modelButtons" role="group" aria-label="Production profile">
-        <button class="production-model active" type="button" data-model="v6" aria-pressed="true">
-          <strong>v6 · Controlled</strong><span>Polished, focused execution</span>
+        <button class="production-model active" type="button" data-model="v6-pro-custom" aria-pressed="true">
+          <strong>v6 Pro Custom · Controlled</strong><span>Polished, focused execution</span>
         </button>
-        <button class="production-model" type="button" data-model="v6-wild" aria-pressed="false">
-          <strong>v6-wild · Exploratory</strong><span>Musical mutations and hybrids</span>
+        <button class="production-model" type="button" data-model="v6-wild-pro-custom" aria-pressed="false">
+          <strong>v6-wild Pro Custom · Exploratory</strong><span>Musical mutations and hybrids</span>
         </button>
         <button class="production-model" type="button" data-model="v6-mini" aria-pressed="false">
           <strong>v6-mini · Sketch</strong><span>Concise, fast concept brief</span>
@@ -1180,7 +1449,7 @@
   </div>
 </section>
 
-<nav class="bottom-nav" role="navigation" aria-label="Mobile Navigation">
+<nav class="bottom-nav" aria-label="Mobile Navigation">
   <div class="bottom-nav-inner">
     <button type="button" class="bnav-btn active" data-tab="core">
       <span class="bnav-icon">⚡</span>
@@ -1218,13 +1487,17 @@
       <span class="bnav-icon">💾</span>
       <span class="bnav-label">Backup</span>
     </button>
-    <button class="bnav-btn" data-tab="model">
+    <button type="button" class="bnav-btn" data-tab="model">
       <span>🎵</span>
       <span>Modell</span>
     </button>
-    <button class="bnav-btn" data-tab="production">
+    <button type="button" class="bnav-btn" data-tab="production">
       <span class="bnav-icon">🎛️</span>
       <span class="bnav-label">Studio</span>
+    </button>
+    <button type="button" class="bnav-btn" data-tab="facets">
+      <span class="bnav-icon">🪻</span>
+      <span class="bnav-label">LYVRA</span>
     </button>
   </div>
 </nav>
@@ -1242,6 +1515,27 @@
 <script src="./lyric.engine.js"></script>
 <script src="./src/production.calc.js"></script>
 <script src="./production.js"></script>
+<script src="./src/lyvra.facets.calc.js"></script>
+<script src="./lyvra.facets.js"></script>
+
+<footer class="site-footer">
+  <div class="footer-topline">
+    <span class="footer-brand">LYVRA · Facetten-Intelligenz</span>
+    <nav class="footer-links" aria-label="LYVRA und Webradio">
+      <a href="https://weblyvra.666soundsdesign-broadcaster.com/" target="_blank" rel="noopener noreferrer">LYVRA Website <span aria-hidden="true">↗</span></a>
+      <a href="https://webradio.666soundsdesign-broadcaster.com/" target="_blank" rel="noopener noreferrer">WebRadio <span aria-hidden="true">↗</span></a>
+    </nav>
+  </div>
+  <details class="footer-player">
+    <summary>▶ 666SOUNDsDESIGn WebRadio öffnen</summary>
+    <iframe
+      src="https://webradio.666soundsdesign-broadcaster.com/embed/miniplayer.html"
+      title="666SOUNDsDESIGn WebRadio MiniPlayer"
+      loading="lazy"
+      allow="autoplay"
+      referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  </details>
+</footer>
 
 </body>
 </html>

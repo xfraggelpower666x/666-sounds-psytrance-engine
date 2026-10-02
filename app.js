@@ -196,7 +196,9 @@ document.addEventListener('DOMContentLoaded', () => {
   updateAll();
   // PWA service worker
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+    navigator.serviceWorker.register('./sw.js').catch(() => {
+      if (window.APP_showToast) window.APP_showToast('Offline support unavailable');
+    });
   }
 });
 

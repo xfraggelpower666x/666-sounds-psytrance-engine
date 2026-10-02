@@ -1,28 +1,31 @@
 {
   "name": "666-sounds-psytrance-engine",
-  "version": "2.0.0",
-  "description": "Psychoacoustic Psytrance Prompt Generator for Suno AI Custom Mode (PWA)",
+  "version": "1.0.0",
+  "description": "666 SOUNDS DESIGN — Psychoacoustic Psytrance Prompt Engine",
   "private": true,
+  "type": "commonjs",
   "scripts": {
     "lint": "npm run lint:js && npm run lint:html",
     "lint:js": "eslint app.js psycho.js engine4d.js matrix.js sw.js",
-    "lint:html": "html-validate index.html"
-  },
-  "keywords": ["psytrance", "suno", "pwa", "prompt-generator"],
-  "license": "ISC",
-  "devDependencies": {
-    "eslint": "^8.57.0",
-    "html-validate": "^8.0.0"
-  }
-  "version": "1.0.0",
-  "description": "666 SOUNDS DESIGN — Psychoacoustic Psytrance Prompt Engine",
-  "type": "commonjs",
-  "scripts": {
+    "lint:html": "html-validate index.html",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "test:psycho": "jest tests/psycho.test.js --verbose",
     "test:4d": "jest tests/engine4d.test.js --verbose",
     "test:production": "jest tests/production.test.js --verbose"
+  },
+  "keywords": [
+    "psytrance",
+    "suno",
+    "pwa",
+    "prompt-generator"
+  ],
+  "author": "666 SOUNDS DESIGN",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "html-validate": "^8.0.0",
+    "jest": "^29.7.0"
   },
   "jest": {
     "transform": {},
@@ -42,12 +45,7 @@
       }
     }
   },
-  "devDependencies": {
-    "jest": "^29.7.0"
-  },
   "engines": {
     "node": ">=18.0.0"
-  },
-  "author": "666 SOUNDS DESIGN",
-  "license": "MIT"
+  }
 }

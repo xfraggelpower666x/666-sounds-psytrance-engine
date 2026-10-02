@@ -18,21 +18,36 @@
 'use strict';
 
 // ============================================================
-// API KEY MANAGEMENT (localStorage — never in code)
+// API KEY MANAGEMENT (sessionStorage — short-lived, not long-term)
 // ============================================================
 
 const OPENAI_KEY_STORAGE = '666sounds_openai_key';
 
+function getSessionStorageSafe() {
+  try {
+    const storage = typeof window !== 'undefined' ? window.sessionStorage : null;
+    if (storage) return storage;
+  } catch {
+    // Ignore if browser storage is unavailable or blocked.
+  }
+  return null;
+}
+
 const LyricKeyManager = {
   get() {
-    return localStorage.getItem(OPENAI_KEY_STORAGE) || '';
+    const storage = getSessionStorageSafe();
+    return storage ? storage.getItem(OPENAI_KEY_STORAGE) || '' : '';
   },
   set(key) {
-    if (!key.startsWith('sk-')) throw new Error('Kein gültiger OpenAI-Key (muss mit sk- beginnen)');
-    localStorage.setItem(OPENAI_KEY_STORAGE, key);
+    const value = String(key || '').trim();
+    if (!value.startsWith('sk-')) throw new Error('Kein gültiger OpenAI-Key (muss mit sk- beginnen)');
+    const storage = getSessionStorageSafe();
+    if (!storage) throw new Error('Browser-Speicher nicht verfügbar');
+    storage.setItem(OPENAI_KEY_STORAGE, value);
   },
   clear() {
-    localStorage.removeItem(OPENAI_KEY_STORAGE);
+    const storage = getSessionStorageSafe();
+    if (storage) storage.removeItem(OPENAI_KEY_STORAGE);
   },
   isSet() {
     const k = this.get();
@@ -69,6 +84,34 @@ async function callOpenAI({ model = 'gpt-4o-mini', messages, maxTokens = 800, te
 
   const data = await response.json();
   return data.choices[0].message.content.trim();
+}
+
+async function fetchSunoWebResearchContext({ subgenreId, bpm, moods = [] } = {}) {
+  const sources = [
+    'https://r.jina.ai/http://www.muselift.com/psy-trance-lyrics-generator/',
+    'https://r.jina.ai/http://suno.com/blog'
+  ];
+
+  const snippets = [];
+  for (const url of sources) {
+    try {
+      const response = await fetch(url, { headers: { Accept: 'text/plain, text/html' } });
+      if (!response.ok) continue;
+      const text = await response.text();
+      const short = String(text || '').replace(/\s+/g, ' ').trim();
+      if (short) snippets.push(short.slice(0, 500));
+    } catch {
+      // fail quietly: we keep a local fallback below
+    }
+  }
+
+  const fallback = [
+    'MuseLift psy-trance lyric guidance emphasizes clear [Intro]-[Build]-[Drop]-[Break]-[Peak]-[Outro] energy arcs, strong bass language and direct section tags.',
+    'Suno v6 / v6 Pro / Studio 2 practice favors precise arrangement cues, explicit low-end protection, and mono-safe sub/kick descriptions over generic genre labels.',
+    `For ${subgenreId || 'psytrance'} at ${bpm || 148} BPM and moods ${moods.join(', ') || 'dark psychedelic'}, keep the kick and sub center-stage, use clear energy scripting, and separate arrangement, mix, and FX motion in the prompt.`
+  ];
+
+  return snippets.length ? snippets.join(' ') : fallback.join(' ');
 }
 
 // ============================================================
@@ -115,12 +158,16 @@ async function generateAILyrics({ subgenreId, keywords, bpm, moods, additionalCo
   const moodStr  = moods && moods.length ? `Mood: ${moods.join(', ')}.` : '';
   const kwStr    = keywords ? `Keywords / Themen: ${keywords}.` : '';
   const ctxStr   = additionalContext ? `Zusätzlicher Kontext: ${additionalContext}` : '';
+  const researchContext = await fetchSunoWebResearchContext({ subgenreId, bpm, moods: moods || [] });
 
   const userPrompt = `Erstelle vollständige Psytrance-Lyrics für ${template.name}.
 BPM: ${bpm}
 ${moodStr}
 ${kwStr}
 ${ctxStr}
+
+Web-Research / Suno-Alignierung:
+${researchContext}
 
 Wichtige Regeln:
 - Nutze [Section]-Tags um Energie und Arrangement zu steuern

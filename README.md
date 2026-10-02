@@ -1,4 +1,4 @@
-# 666 SOUNDS — Psytrance Prompt Engine
+# LYVRA PSY ENGINE
 
 > Psychoacoustic Psytrance Prompt Generator für Suno AI Custom Mode  
 > Cyberpunk Neon / UV Glow Design · iPhone PWA · Browser DAW Integration
@@ -71,6 +71,16 @@
 - Semantic causal evidence reports with rule provenance, guard conflicts, snapshots, optional listening ratings and manually entered DAW correlation; confidence is heuristic and no audio is analyzed
 
 > The Production Engine creates prompts and plugin design briefs. It does not process audio or build a real-time VST/AU plugin.
+
+### 🪻 LYVRA Facet Template
+- **Track Design**: one shared music intent, motor-first Low/Mid/High roles, semantic lyric causality, meaning-bound emoji guidance, and separate Title / Extended / Style / Lyrics fields with field limits.
+- **Suno Studio 2**: generation controls and Studio operation controls are separate; includes the Blueprint's twelve-section ten-minute Extend/arrangement proposal with per-section motor/LOW/MID/HIGH behavior.
+- **Speech Design**: simple and advanced modes reflect the observed beta field structure; controlled phoneme candidates require source hash, timecode, original/candidate pronunciation, observation and approval. This is a development candidate, not a released production feature.
+- **Six two-phase manual searches**: preaudit and renderer translation for each facet, with separate official and community links. Searches open in a browser; automatic web readback is not implemented.
+- **Evidence log and project export**: locally stored manual observations include the source, date, model, Studio mode, claim, interpretation, contradictions, confidence, generalization limit, test candidate and status. Export the evidence or the whole project as JSON/Markdown.
+- **WebRadio**: the official mini-player is embedded in the page footer.
+
+> This dashboard is a local, static, rule-based template. It does not access LYVRA's native runtime or repository, write to GitHub, call Suno, analyze audio, or verify renderer behavior. A ten-minute arrangement uses a seed under eight minutes followed by Extend and Studio arrangement; it is not represented as one v6 generation.
 
 ### 📊 Audit System
 - Score 0–100, Grade A/B/C/D
@@ -149,7 +159,7 @@ Die Psychoakustik-, 4D- und Production-Tests lassen sich einzeln mit `npm run te
 
 ---
 
-## Projekt: 666 SOUNDS DESIGN
+## Projekt: LYVRA PSY ENGINE
 
 ```
 GitHub: xfraggelpower666x/666-sounds-psytrance-engine

@@ -110,6 +110,15 @@
   .site-header { padding: 10px 14px; }
   .logo { font-size: 0.95rem; }
   .header-sub { display: none; }
+  .site-footer {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom));
+  }
+  .footer-topline {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .footer-links { gap: 12px 18px; }
+  .footer-player iframe { height: 365px; }
 }
 
 /* ============================================================

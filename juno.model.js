@@ -1,6 +1,6 @@
 /* ============================================================
    JUNO MODEL SWITCHER — 666 SOUNDS DESIGN
-   Models: v5.5 Pro | v5.5 Pro Custom 1/2/3 | v4.5
+   Suno model switcher for v6 Pro custom / Studio 2 prompt tuning.
    Persists to localStorage. Affects lyric generation style.
    ============================================================ */
 
@@ -303,7 +303,7 @@ function buildJunoModelSection() {
     <div class="juno-model-header-bar">
       <div class="juno-model-header-left">
         <span class="juno-model-header-icon">🎵</span>
-        <span class="juno-model-header-title">JUNO MODELL</span>
+        <span class="juno-model-header-title">SUNO MODEL</span>
       </div>
       <div class="juno-model-badge-wrap">
         <span class="juno-model-badge" id="juno-model-badge"></span>

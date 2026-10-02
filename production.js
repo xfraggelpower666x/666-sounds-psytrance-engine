@@ -35,7 +35,7 @@ function initProductionEngine() {
   if (!calc) throw new Error('Production calculator did not load.');
 
   const state = {
-    model: 'v6',
+    model: 'v6-pro',
     maxMode: true,
     sources: PRODUCTION_SAMPLES.map(source => ({ ...source, preserve: [...source.preserve], transform: [...source.transform] })),
     nextSourceId: PRODUCTION_SAMPLES.length + 1,

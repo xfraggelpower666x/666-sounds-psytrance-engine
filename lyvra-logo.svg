@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 220" role="img" aria-labelledby="title desc">
+  <title id="title">LYVRA Facetten-Intelligenz</title>
+  <desc id="desc">Neon wordmark for the LYVRA Psytrance engine with a cybernetic emblem.</desc>
+  <defs>
+    <linearGradient id="core" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#00e5ff"/>
+      <stop offset="30%" stop-color="#c92fff"/>
+      <stop offset="70%" stop-color="#ff2d78"/>
+      <stop offset="100%" stop-color="#ffe000"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" x2="100%" y1="0%" y2="0%">
+      <stop offset="0%" stop-color="#00e5ff"/>
+      <stop offset="100%" stop-color="#ff2d78"/>
+    </linearGradient>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#00e5ff" flood-opacity="0.9"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#c92fff" flood-opacity="0.8"/>
+    </filter>
+  </defs>
+
+  <rect width="620" height="220" fill="#080810" rx="24"/>
+
+  <g transform="translate(34 24)" filter="url(#softGlow)">
+    <path d="M30 24h98l18 18v112l-18 18H30l-18-18V42l18-18zm20 32v82h58V56H50zm18 22h20v-20H68v20zm0 26h20v-20H68v20z" fill="url(#core)" opacity="0.95"/>
+    <path d="M152 24h20v140h-20zM152 24h76v20h-76zM152 97h76v20h-76z" fill="url(#core)" opacity="0.96"/>
+    <path d="M292 24h74l42 42v98h-24v-90l-30-30h-62v120h-24V24zm128 40h28v42h-28z" fill="url(#core)" opacity="0.96"/>
+    <path d="M448 24h20v140h-20zM448 24h68v20h-68zM448 97h68v20h-68z" fill="url(#core)" opacity="0.96"/>
+  </g>
+
+  <g transform="translate(40 168)">
+    <text x="0" y="0" fill="url(#core)" font-family="Orbitron, Arial, sans-serif" font-size="35" font-weight="900" letter-spacing="8">FACETTEN-INTELLIGENZ</text>
+  </g>
+</svg>
