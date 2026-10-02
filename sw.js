@@ -7,6 +7,8 @@ const CACHE_NAME = '666-sounds-v1';
 
 // Core same-origin assets — install fails if any of these are missing.
 const CORE_ASSETS = [
+const CACHE_NAME = '666-sounds-v5';
+const ASSETS = [
   './',
   './index.html',
   './style.css',
@@ -15,6 +17,14 @@ const CORE_ASSETS = [
   './psycho.js',
   './engine4d.js',
   './matrix.js',
+  './production.js',
+  './production.css',
+  './src/production.calc.js',
+  './juno.model.js',
+  './lyric.css',
+  './juno.model.css',
+  './lyric.templates.js',
+  './lyric.engine.js',
   './manifest.json',
   './icon-192.svg'
 ];

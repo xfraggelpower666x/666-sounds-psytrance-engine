@@ -58,6 +58,20 @@
 - **Master Prompt**: Alle aktiven Layer → 200-char merged String
 - **Matrix Presets**: Save/Load komplette 3-Layer Snapshots
 
+### 🎛️ Production Engine
+- Gemeinsame Core-Prompt-Basis für Produktions-, Quellen-, Studio- und FX-Briefs
+- **v6 / Wild / Mini Brief-Profile** mit Weirdness-, Influence- und Diversity-Steuerung (Prompt-Text, keine API-Anbindung)
+- Multi-Source Briefs mit musikalischer Rolle, zu erhaltenden und zu transformierenden Eigenschaften
+- Hard Anchors für Genre, Tempo, Groove, Tonalität und Mix; Wild-Mutationen und Konfliktwarnungen
+- Studio-2-Ziele, sechs Custom-FX-Vorlagen und Snapshot-JSON
+- HAAS SENTINEL design briefs with protected mono kick/sub, correlation-aware width automation, tempo-synced motion, source starting points, bar-by-bar build/drop automation, and the Dark Forest Safe Width preset
+- Haas-aware processing guidance and ordered EQ → distortion → Haas → delay → convolution/reverb → limiter chains
+- Psytrance Motor Tools presets for rolling kick/bass design, mono and phase protection, and live conflict warnings
+- Intelligent FX Motion System profiles by subgenre and arrangement phase, with bounded family selection and stereo/space/chaos controls
+- Semantic causal evidence reports with rule provenance, guard conflicts, snapshots, optional listening ratings and manually entered DAW correlation; confidence is heuristic and no audio is analyzed
+
+> The Production Engine creates prompts and plugin design briefs. It does not process audio or build a real-time VST/AU plugin.
+
 ### 📊 Audit System
 - Score 0–100, Grade A/B/C/D
 - Checks: Subgenre, BPM, Zeichenlimit, Mood-Count, Sonic-Elements, Bass-Tag, Guard
@@ -123,6 +137,15 @@ Für direkte theDAW-Integration: `PsyPromptPanel.tsx` (coming soon)
 - **Canvas API**: Binaural Visualizer + 4D Position Visualizer
 - **Fonts**: Orbitron + Share Tech Mono + Inter (Google Fonts)
 - **Design**: 666 SOUNDS DESIGN Cyberpunk Neon System
+
+## Entwicklung und Tests
+
+```sh
+npm ci
+npm test
+```
+
+Die Psychoakustik-, 4D- und Production-Tests lassen sich einzeln mit `npm run test:psycho`, `npm run test:4d` und `npm run test:production` ausführen.
 
 ---
 
