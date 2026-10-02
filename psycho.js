@@ -44,12 +44,113 @@ const PSYCHO_SUNO_TAGS = {
 const psychoState = {
   profile:    'trance',
   carrier:    200,
-  haasDelay:  12,
+  haasDelayMs: 15,
+  haasMode: 'automated',
+  haasTarget: 'acid harmonics',
+  stereoLowCutHz: 300,
+  stereoIntensity: 55,
+  leftRightOffsetMs: 0,
+  stereoSide: 'right',
+  motionRate: 'slow',
+  motionDepth: 12,
+  correlationThreshold: 0.15,
+  autoWidthReductionAmount: 70,
+  kickBypassSensitivity: 60,
+  wetDryMix: 45,
+  outputLimiter: true,
+  outputTrimDb: 0,
+  safety: {
+    subMono: true,
+    sideLowCut: true,
+    correlationMonitor: true,
+    kickTransientBypass: true,
+    autoWidthReduction: true,
+    dropOnlyActivation: false
+  },
   isoEnabled: true,
   roomPreset: 'club',
   effects: new Set(['binaural', 'haas', 'isochronic', 'room']),
   animFrame:  null
 };
+window.PSYCHO_STATE = psychoState;
+window.HAAS_SENTINEL_DEFAULTS = Object.freeze({
+  haasMode: 'automated',
+  haasTarget: 'acid harmonics',
+  stereoLowCutHz: 300,
+  haasDelayMs: 15,
+  leftRightOffsetMs: 0,
+  stereoSide: 'right',
+  stereoIntensity: 55,
+  wetDryMix: 45,
+  motionRate: 'slow',
+  motionDepth: 12,
+  correlationThreshold: 0.15,
+  autoWidthReductionAmount: 70,
+  kickBypassSensitivity: 60,
+  outputTrimDb: 0,
+  outputLimiter: true,
+  safety: {
+    subMono: true,
+    sideLowCut: true,
+    correlationMonitor: true,
+    kickTransientBypass: true,
+    autoWidthReduction: true,
+    dropOnlyActivation: false
+  }
+});
+window.HAAS_SENTINEL_PRESETS = Object.freeze({
+  darkForestSafe: window.HAAS_SENTINEL_DEFAULTS,
+  acidOrbit: Object.freeze({
+    ...window.HAAS_SENTINEL_DEFAULTS,
+    haasTarget: 'acid harmonics',
+    stereoLowCutHz: 350,
+    haasDelayMs: 18,
+    stereoIntensity: 68,
+    wetDryMix: 58,
+    motionRate: 'bar',
+    motionDepth: 24,
+    stereoSide: 'alternating'
+  }),
+  creatureSwarm: Object.freeze({
+    ...window.HAAS_SENTINEL_DEFAULTS,
+    haasTarget: 'creature FX',
+    stereoLowCutHz: 550,
+    haasDelayMs: 24,
+    stereoIntensity: 80,
+    wetDryMix: 65,
+    motionRate: 'sixteenth',
+    motionDepth: 34,
+    stereoSide: 'random'
+  }),
+  breakdownVoid: Object.freeze({
+    ...window.HAAS_SENTINEL_DEFAULTS,
+    haasTarget: 'atmospheric drones',
+    stereoLowCutHz: 250,
+    haasDelayMs: 28,
+    stereoIntensity: 78,
+    wetDryMix: 68,
+    motionDepth: 30,
+    stereoSide: 'alternating',
+    safety: {
+      subMono: true,
+      sideLowCut: true,
+      correlationMonitor: true,
+      kickTransientBypass: true,
+      autoWidthReduction: true,
+      dropOnlyActivation: true
+    }
+  }),
+  dropCollapse: Object.freeze({
+    ...window.HAAS_SENTINEL_DEFAULTS,
+    haasTarget: 'acid harmonics',
+    stereoLowCutHz: 300,
+    stereoIntensity: 12,
+    wetDryMix: 8,
+    motionRate: 'none',
+    motionDepth: 0,
+    stereoSide: 'right'
+  })
+});
 
 // ============================================================
 // INIT
@@ -114,18 +215,18 @@ function buildHaasSlider() {
   const slider = document.getElementById('haas-slider');
   const valEl  = document.getElementById('haas-value');
   if (!slider) return;
-  slider.value = psychoState.haasDelay;
-  valEl && (valEl.textContent = psychoState.haasDelay + ' ms');
+  slider.value = psychoState.haasDelayMs;
+  valEl && (valEl.textContent = psychoState.haasDelayMs + ' ms');
   slider.addEventListener('input', () => {
-    psychoState.haasDelay = parseInt(slider.value);
-    if (valEl) valEl.textContent = psychoState.haasDelay + ' ms';
+    psychoState.haasDelayMs = parseInt(slider.value);
+    if (valEl) valEl.textContent = psychoState.haasDelayMs + ' ms';
     updateHaasInfo();
     updatePsychoOutput();
   });
 }
 
 function updateHaasInfo() {
-  const delay = psychoState.haasDelay;
+  const delay = psychoState.haasDelayMs;
   const zone = HAAS_ZONES.find(z => delay >= z.min && delay <= z.max);
   const zoneEl   = document.getElementById('haas-zone');
   const effectEl = document.getElementById('haas-effect');
@@ -207,7 +308,7 @@ function updatePsychoOutput() {
   const p = PSYCHO_PROFILES[psychoState.profile];
   const tags = [];
   if (psychoState.effects.has('binaural'))   tags.push(`binaural ${p.hz}Hz ${p.band}`);
-  if (psychoState.effects.has('haas'))       tags.push(`Haas stereo ${psychoState.haasDelay}ms`);
+  if (psychoState.effects.has('haas'))       tags.push(`Haas stereo ${psychoState.haasDelayMs}ms`);
   if (psychoState.effects.has('isochronic')) tags.push(`isochronic ${p.hz}Hz pulse`);
   if (psychoState.effects.has('room'))       tags.push(ROOM_PRESETS[psychoState.roomPreset].tag);
 
@@ -223,7 +324,9 @@ function updatePsychoOutput() {
   }
   // Expose for matrix
   window.PSYCHO_TAGS = tags.join(', ');
+  document.dispatchEvent(new CustomEvent('app:psychochange'));
 }
+window.APP_updatePsychoOutput = updatePsychoOutput;
 
 function bindPsychoActions() {
   const copyBtn = document.getElementById('btn-copy-psycho');

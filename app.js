@@ -320,6 +320,8 @@ function bindActions() {
     'btn-copy-visual':    doCopyVisual,
     'btn-run-audit':      runAudit,
     'btn-snapshot':       doSnapshot,
+    'btn-run-audit-panel': runAudit,
+    'btn-snapshot-panel':  doSnapshot,
     'btn-export-json':    doExportJSON,
     'btn-import-trigger': () => document.getElementById('import-input')?.click()
   };
@@ -524,6 +526,7 @@ function updateAll() {
   updatePromptOutput();
   updateVisualOutput();
   updateLyricOutput();
+  document.dispatchEvent(new CustomEvent('app:statechange'));
 }
 
 function updatePromptOutput() {
