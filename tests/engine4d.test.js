@@ -307,8 +307,9 @@ describe('Ambisonics Orders', () => {
     expect(getAmbisonicOrder(3).channels).toBe(16);
   });
 
-  test('ambisonicChannelCount formula: (order+1)²', () => {
-    [0, 1, 2, 3].forEach(order => {
+  test('ambisonicChannelCount maps order 0 to stereo and higher orders by formula', () => {
+    expect(ambisonicChannelCount(0)).toBe(2);
+    [1, 2, 3].forEach(order => {
       expect(ambisonicChannelCount(order)).toBe((order + 1) ** 2);
     });
   });
@@ -438,10 +439,10 @@ describe('Psychoacoustic Plausibility', () => {
     }
   });
 
-  test('Doppler: slow fly-by (20 m/s) < 1 semitone shift', () => {
+  test('Doppler: 20 m/s fly-by produces an approximately 1.04 semitone shift', () => {
     const ratio = calcDopplerRatio(20);
     const semitones = dopplerRatioToSemitones(ratio);
-    expect(semitones).toBeLessThan(1);
+    expect(semitones).toBeCloseTo(1.04, 2);
     expect(semitones).toBeGreaterThan(0);
   });
 

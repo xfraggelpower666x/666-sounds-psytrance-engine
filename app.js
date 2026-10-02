@@ -346,6 +346,7 @@ function bindTabs() {
       document.querySelectorAll('.tab-btn, .bnav-btn').forEach(b => b.classList.remove('active'));
       document.getElementById('panel-' + target)?.classList.add('active');
       document.querySelectorAll(`[data-tab="${target}"]`).forEach(b => b.classList.add('active'));
+      document.dispatchEvent(new CustomEvent('app:tabchange', { detail: { tab: target } }));
     });
   });
 }
@@ -489,11 +490,11 @@ function doSavePreset() {
 // ============================================================
 // PROMPT BUILDER
 // ============================================================
-function buildPrompt() {
+function buildPrompt(includePsycho = true) {
   const g = SUBGENRES[state.subgenre];
   const sonicTags = SONIC_ELEMENTS.filter(s => state.sonic.has(s.id)).map(s => s.tag);
   const moodTags  = MOODS.filter(m => state.moods.has(m.id)).map(m => m.tag);
-  const psycho = window.PSYCHO_TAGS ? [`psychoacoustic depth: ${window.PSYCHO_TAGS}`] : [];
+  const psycho = includePsycho && window.PSYCHO_TAGS ? [`psychoacoustic depth: ${window.PSYCHO_TAGS}`] : [];
   const parts = [
     `${g.label} psytrance`,
     `${state.bpm} BPM`,

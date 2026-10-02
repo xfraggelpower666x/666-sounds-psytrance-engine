@@ -409,14 +409,37 @@ function initLyricPanel() {
     if (imageRemoveBtn) imageRemoveBtn.disabled = !enabled;
   }
 
-  imageRemoveBtn?.addEventListener('click', () => {
-    selectedImageFile = null;
-    if (imageInput) imageInput.value = '';
+  let previewUrl = null;
+  const clearImagePreview = () => {
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      previewUrl = null;
+    }
     const preview = document.getElementById('lyric-image-preview');
     if (preview) {
       preview.style.backgroundImage = '';
       preview.classList.remove('has-image');
     }
+  };
+  const showImagePreview = file => {
+    const preview = document.getElementById('lyric-image-preview');
+    if (!preview) return;
+    previewUrl = URL.createObjectURL(file);
+    preview.style.backgroundImage = `url(${previewUrl})`;
+    preview.classList.add('has-image');
+  };
+
+  window.addEventListener('pagehide', clearImagePreview);
+  window.addEventListener('pageshow', event => {
+    if (event.persisted && selectedImageFile && LyricKeyManager.isSet()) {
+      showImagePreview(selectedImageFile);
+    }
+  });
+
+  imageRemoveBtn?.addEventListener('click', () => {
+    selectedImageFile = null;
+    if (imageInput) imageInput.value = '';
+    clearImagePreview();
     const out = document.getElementById('lyric-image-output-text');
     if (out) out.value = '';
     updateSectionPreview('');
@@ -425,6 +448,7 @@ function initLyricPanel() {
 
   imageInput?.addEventListener('change', e => {
     const file = e.target.files[0];
+    clearImagePreview();
     selectedImageFile = file || null;
     setImageControls(!!file);
     if (!file) return;
@@ -433,12 +457,7 @@ function initLyricPanel() {
       return;
     }
 
-    const preview = document.getElementById('lyric-image-preview');
-    if (preview) {
-      const url = URL.createObjectURL(file);
-      preview.style.backgroundImage = `url(${url})`;
-      preview.classList.add('has-image');
-    }
+    showImagePreview(file);
   });
 
   imageGenerateBtn?.addEventListener('click', async () => {

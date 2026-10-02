@@ -124,6 +124,15 @@ Für direkte theDAW-Integration: `PsyPromptPanel.tsx` (coming soon)
 - **Fonts**: Orbitron + Share Tech Mono + Inter (Google Fonts)
 - **Design**: 666 SOUNDS DESIGN Cyberpunk Neon System
 
+## Entwicklung und Tests
+
+```sh
+npm ci
+npm test
+```
+
+Die Psychoakustik- und 4D-Tests lassen sich einzeln mit `npm run test:psycho` und `npm run test:4d` ausführen.
+
 ---
 
 ## Projekt: 666 SOUNDS DESIGN
