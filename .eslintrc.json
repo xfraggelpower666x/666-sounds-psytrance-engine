@@ -1,0 +1,37 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "script"
+  },
+  "globals": {
+    "APP_STATE": "writable",
+    "APP_SUBGENRES": "writable",
+    "APP_SONIC": "writable",
+    "APP_MOODS": "writable",
+    "APP_buildPrompt": "writable",
+    "APP_showToast": "writable",
+    "PSYCHO_TAGS": "writable",
+    "ENGINE_4D_TAGS": "writable",
+    "MATRIX_MASTER_PROMPT": "writable",
+    "psychoState": "readonly",
+    "state4D": "readonly"
+  },
+  "extends": "eslint:recommended",
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-undef": "error",
+    "no-console": "warn",
+    "no-redeclare": ["error", { "builtinGlobals": false }]
+  },
+  "overrides": [
+    {
+      "files": ["sw.js"],
+      "env": { "serviceworker": true, "browser": false }
+    }
+  ]
+}

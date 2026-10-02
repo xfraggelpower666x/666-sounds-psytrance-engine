@@ -1,0 +1,62 @@
+name: Lint & PWA Audit
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  lint:
+    name: ESLint + HTML Validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install --no-save eslint@8 html-validate
+
+      - name: ESLint (JS)
+        run: npx eslint app.js psycho.js engine4d.js matrix.js sw.js
+
+      - name: HTML validation
+        run: npx html-validate index.html
+
+  lighthouse:
+    name: Lighthouse PWA Score (optional)
+    runs-on: ubuntu-latest
+    needs: lint
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Serve site
+        run: |
+          npx --yes http-server . -p 8080 &
+          npx --yes wait-on http://localhost:8080 --timeout 30000
+
+      - name: Run Lighthouse (PWA category)
+        run: |
+          npx --yes lighthouse http://localhost:8080/index.html \
+            --only-categories=pwa \
+            --chrome-flags="--headless --no-sandbox" \
+            --output=json --output-path=./lighthouse-pwa.json || true
+
+      - name: Upload Lighthouse report
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-pwa-report
+          path: ./lighthouse-pwa.json
+          if-no-files-found: ignore

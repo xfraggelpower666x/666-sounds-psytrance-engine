@@ -28,16 +28,6 @@ const HAAS_ZONES = [
   { min: 26,  max: 35,  zone: 'Pre-Echo',   effect: 'Grenze: leichtes Pre-Echo hörbar' }
 ];
 
-const PSYCHO_SUNO_TAGS = {
-  binaural:   'binaural beats',
-  haas:       'Haas stereo effect',
-  isochronic: 'isochronic pulse rhythm',
-  room_tight: 'tight dry studio',
-  room_club:  'club room reverb',
-  room_cave:  'deep cave reverb',
-  room_cosmic:'infinite cosmic space reverb'
-};
-
 // ============================================================
 // STATE
 // ============================================================

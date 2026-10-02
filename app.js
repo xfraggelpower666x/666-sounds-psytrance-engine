@@ -315,15 +315,15 @@ function bindBPM() {
 
 function bindActions() {
   const btnMap = {
-    'btn-randomize':      doRandomize,
-    'btn-copy':           doCopy,
-    'btn-copy-visual':    doCopyVisual,
-    'btn-run-audit':      runAudit,
-    'btn-snapshot':       doSnapshot,
+    'btn-randomize':       doRandomize,
+    'btn-copy':            doCopy,
+    'btn-copy-visual':     doCopyVisual,
+    'btn-run-audit':       runAudit,
     'btn-run-audit-panel': runAudit,
-    'btn-snapshot-panel':  doSnapshot,
-    'btn-export-json':    doExportJSON,
-    'btn-import-trigger': () => document.getElementById('import-input')?.click()
+    'btn-snapshot':        doSnapshot,
+    'btn-snapshot-backup': doSnapshot,
+    'btn-export-json':     doExportJSON,
+    'btn-copy-lyric':      doCopyLyric
   };
   Object.entries(btnMap).forEach(([id, fn]) => {
     const el = document.getElementById(id);
@@ -453,7 +453,7 @@ function renderUserPresets() {
     el.innerHTML = '<span class="text-muted font-mono" style="font-size:0.62rem">Keine gespeicherten Presets</span>';
     return;
   }
-  state.userPresets.forEach((p, i) => {
+  state.userPresets.forEach(p => {
     const btn = document.createElement('button');
     btn.className = 'preset-btn';
     btn.textContent = p.name;
@@ -690,6 +690,12 @@ function doCopyVisual() {
   const el = document.getElementById('visual-output');
   if (!el) return;
   navigator.clipboard.writeText(el.textContent).then(() => showToast('Visual Prompt kopiert!')).catch(() => showToast('Fehler beim Kopieren'));
+}
+
+function doCopyLyric() {
+  const el = document.getElementById('lyric-output');
+  if (!el) return;
+  navigator.clipboard.writeText(el.textContent).then(() => showToast('Lyric kopiert!')).catch(() => showToast('Fehler beim Kopieren'));
 }
 
 function doSnapshot() {
